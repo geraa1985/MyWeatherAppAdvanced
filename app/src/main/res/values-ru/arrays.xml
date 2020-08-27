@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="cities">
+        <item>Москва</item>
+        <item>Санкт-Петербург</item>
+        <item>Ростов</item>
+        <item>Краснодарский Край</item>
+        <item>Таганрог</item>
+        <item>Уфа</item>
+        <item>Новосибирск</item>
+        <item>Ялта</item>
+        <item>Пермь</item>
+        <item>Иркутск</item>
+        <item>Сочи</item>
+        <item>Якутск</item>
+    </string-array>
+</resources>

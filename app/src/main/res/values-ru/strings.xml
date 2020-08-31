@@ -2,7 +2,7 @@
     <string name="app_name">Погода</string>
     <string name="nav_header_title">Антон Герасимов</string>
     <string name="nav_header_subtitle">geraa1985@gmail.com</string>
-    <string name="menu_home">Погода</string>
+    <string name="menu_weather">Погода</string>
     <string name="menu_list">Список городов</string>
     <string name="menu_settings">Настройки</string>
     <string name="feels_like">ощущается как: </string>
@@ -19,5 +19,9 @@
     <string name="night">ночная</string>
     <string name="enter_city">Введите город</string>
     <string name="wrong_name_message">Неверный формат</string>
+    <string name="delete">Удалить</string>
+    <string name="clear_all">Очистить список</string>
+    <string name="errorMessage">\ - скорее всего не является городом планеты Земля. Изучите глобус и введите корректный город.\</string>
+    <string name="error_title">Ошибка</string>
 
 </resources>

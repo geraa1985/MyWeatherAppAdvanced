@@ -9,22 +9,19 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.myweatherappadvanced.MainActivity;
 import com.example.myweatherappadvanced.R;
 import com.example.myweatherappadvanced.adapters.CitiesListRVAdapter;
 import com.example.myweatherappadvanced.interfaces.IRVonCityClick;
 import com.example.myweatherappadvanced.interfaces.OnFragmentInteractionListener;
+import com.example.myweatherappadvanced.settings.Settings;
+import com.example.myweatherappadvanced.ui.add.AddCity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-
 public class CitiesListFragment extends Fragment implements IRVonCityClick {
-
-    private LinkedList<String> citiesList;
 
     private RecyclerView cityRV;
     private OnFragmentInteractionListener mListener;
@@ -42,11 +39,8 @@ public class CitiesListFragment extends Fragment implements IRVonCityClick {
 
         findViews();
         fab.setVisibility(View.VISIBLE);
-        if (MainActivity.getCurrentCityName() != null) {
-            citiesList.remove(MainActivity.getCurrentCityName());
-            citiesList.addFirst(MainActivity.getCurrentCityName());
-        }
         setupAdapter();
+        clickOnFAB();
     }
 
     @Override
@@ -61,8 +55,6 @@ public class CitiesListFragment extends Fragment implements IRVonCityClick {
     }
 
     private void findViews() {
-        String[] citiesArray = getResources().getStringArray(R.array.cities);
-        citiesList = new LinkedList<>(Arrays.asList(citiesArray));
         cityRV = requireActivity().findViewById(R.id.citiesRV);
         fab = requireActivity().findViewById(R.id.fab);
     }
@@ -71,12 +63,19 @@ public class CitiesListFragment extends Fragment implements IRVonCityClick {
         LinearLayoutManager lm = new LinearLayoutManager(getContext());
         lm.setOrientation(RecyclerView.VERTICAL);
         cityRV.setLayoutManager(lm);
-        CitiesListRVAdapter adapter = new CitiesListRVAdapter(citiesList, this);
+        cityRV.addItemDecoration(new DividerItemDecoration(requireActivity(), DividerItemDecoration.VERTICAL));
+        CitiesListRVAdapter adapter = new CitiesListRVAdapter(Settings.getInstance().getCitiesList(), this, getActivity());
         cityRV.setAdapter(adapter);
     }
 
     @Override
     public void onCityClick(String cityName) {
+        fab.setVisibility(View.GONE);
         mListener.onFragmentInteraction(cityName);
+    }
+
+    private void clickOnFAB() {
+        fab.setOnClickListener(view -> new AddCity().show(requireActivity().getSupportFragmentManager(), "AddCityDialog"));
+
     }
 }

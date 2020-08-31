@@ -3,5 +3,8 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03A9F4</color>
-    <color name="side_nav_bar_end">#FFEB3B</color>
+    <color name="colorNavBarCenterDay">#00BCD4</color>
+    <color name="colorNavBarCenterNight">#550505</color>
+    <color name="colorNavBarEndDay">#FFEB3B</color>
+    <color name="colorNavBarEndNight">#000000</color>
 </resources>

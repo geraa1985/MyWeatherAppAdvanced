@@ -93,7 +93,6 @@ public class WeatherFragment extends Fragment {
             City city = new City(cityName);
             handler.post(() -> {
                 thermometer.setTemperature(city.getMainTemperature());
-                thermometer.invalidate();
                 Picasso.get().load(city.getWeatherImage()).into(weatherImageView);
                 weatherDescription.setText(city.getDescription());
                 humidityView.setText(city.getHumidity() + requireActivity().getResources().getString(R.string.percent));

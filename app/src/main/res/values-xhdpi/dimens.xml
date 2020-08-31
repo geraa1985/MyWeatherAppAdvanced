@@ -12,4 +12,6 @@
     <dimen name="main_temperature_text_size">40sp</dimen>
     <dimen name="options_text_size">20sp</dimen>
     <dimen name="settings_header_margin_top">15dp</dimen>
+    <dimen name="therm_width">15dp</dimen>
+    <dimen name="therm_weight">75dp</dimen>
 </resources>

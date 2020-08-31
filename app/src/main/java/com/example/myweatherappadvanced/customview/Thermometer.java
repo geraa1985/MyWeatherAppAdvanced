@@ -62,7 +62,7 @@ public class Thermometer extends View {
 
         thermColor = typedArray.getColor(R.styleable.Thermometer_battery_color, Color.GRAY);
         temperatureColor = typedArray.getColor(R.styleable.Thermometer_level_color, Color.GREEN);
-        temperature = typedArray.getInteger(R.styleable.Thermometer_level, 0);
+        temperature = typedArray.getInteger(R.styleable.Thermometer_currentTemp, 0);
         typedArray.recycle();
     }
 

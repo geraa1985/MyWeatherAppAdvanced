@@ -6,8 +6,7 @@
     <declare-styleable name="Thermometer">
         <attr name="battery_color" format="color" />
         <attr name="level_color" format="color" />
-        <attr name="level" format="integer" />
-        <attr name="level_pressed_color" format="color" />
+        <attr name="currentTemp" format="integer" />
     </declare-styleable>
 
 </resources>

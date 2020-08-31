@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.myweatherappadvanced.R;
 import com.example.myweatherappadvanced.calculate.Calculator;
+import com.example.myweatherappadvanced.customview.Thermometer;
 import com.example.myweatherappadvanced.inputdata.City;
 import com.example.myweatherappadvanced.settings.Settings;
 import com.example.myweatherappadvanced.ui.add.AddCity;
@@ -36,6 +37,8 @@ public class WeatherFragment extends Fragment {
     private TextView windSpeedView;
     private TextView windDirectView;
     private FloatingActionButton fab;
+
+    private Thermometer thermometer;
 
     private ImageView yandexImage;
     private ImageView wikiImage;
@@ -80,6 +83,8 @@ public class WeatherFragment extends Fragment {
 
         yandexImage = requireActivity().findViewById(R.id.yandexImage);
         wikiImage = requireActivity().findViewById(R.id.wikiImage);
+
+        thermometer = requireActivity().findViewById(R.id.thermometer);
     }
 
     @SuppressLint("SetTextI18n")
@@ -87,7 +92,8 @@ public class WeatherFragment extends Fragment {
         new Thread(() -> {
             City city = new City(cityName);
             handler.post(() -> {
-
+                thermometer.setTemperature(city.getMainTemperature());
+                thermometer.invalidate();
                 Picasso.get().load(city.getWeatherImage()).into(weatherImageView);
                 weatherDescription.setText(city.getDescription());
                 humidityView.setText(city.getHumidity() + requireActivity().getResources().getString(R.string.percent));

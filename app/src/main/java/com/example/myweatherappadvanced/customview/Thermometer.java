@@ -5,7 +5,6 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
@@ -18,10 +17,16 @@ public class Thermometer extends View {
 
     private int thermColor;
     private int temperatureColor;
+
+    public void setTemperature(int temperature) {
+        this.temperature = temperature;
+        invalidate();
+    }
+
     private int temperature;
 
     private RectF thermRectangle = new RectF();
-    private Rect tempRectangle = new Rect();
+    private RectF tempRectangle = new RectF();
 
     private Paint thermPaint;
     private Paint tempPaint;
@@ -30,7 +35,7 @@ public class Thermometer extends View {
     private int height;
     private float radius;
 
-    private final static int padding = 30;
+    private int padding;
     private final static int round = 2;
 
     public Thermometer(Context context) {
@@ -75,6 +80,7 @@ public class Thermometer extends View {
         super.onSizeChanged(w, h, oldw, oldh);
 
         width = w - getPaddingLeft() - getPaddingRight();
+        padding = width/10;
         height = h - getPaddingTop() - getPaddingBottom();
         radius = width / 2.f;
 
@@ -82,8 +88,8 @@ public class Thermometer extends View {
                 width - width / 4.f,
                 height - padding - radius);
 
-        tempRectangle.set(width / 4 + padding, (height - 2 * padding) / 2 - ((height - 2 * padding) / 2) * temperature / 50 + 2 * padding,
-                width - width / 4 - padding,
+        tempRectangle.set(width / 4.f + padding, (height - 2 * padding) / 2.f - ((height - 2 * padding) / 2.f) * temperature / 50 + 2 * padding,
+                width - width / 4.f - padding,
                 height - 2 * padding);
     }
 

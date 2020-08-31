@@ -18,11 +18,6 @@ public class Thermometer extends View {
     private int thermColor;
     private int temperatureColor;
 
-    public void setTemperature(int temperature) {
-        this.temperature = temperature;
-        invalidate();
-    }
-
     private int temperature;
 
     private RectF thermRectangle = new RectF();
@@ -100,5 +95,13 @@ public class Thermometer extends View {
         canvas.drawRoundRect(thermRectangle, round, round, thermPaint);
         canvas.drawCircle(width / 2.f, height - width / 2.f, radius - padding, tempPaint);
         canvas.drawRect(tempRectangle, tempPaint);
+    }
+
+    public void setTemperature(int temperature) {
+        this.temperature = temperature;
+        tempRectangle.set(width / 4.f + padding, (height - 2 * padding) / 2.f - ((height - 2 * padding) / 2.f) * temperature / 50 + 2 * padding,
+                width - width / 4.f - padding,
+                height - 2 * padding);
+        invalidate();
     }
 }

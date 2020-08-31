@@ -99,6 +99,15 @@ public class Thermometer extends View {
 
     public void setTemperature(int temperature) {
         this.temperature = temperature;
+        if (temperature > 30) {
+            tempPaint.setColor(Color.RED);
+        } else if (temperature > 10) {
+            tempPaint.setColor(Color.YELLOW);
+        } else if (temperature > 0) {
+            tempPaint.setColor(Color.GREEN);
+        } else if (temperature < 0) {
+            tempPaint.setColor(Color.BLUE);
+        }
         tempRectangle.set(width / 4.f + padding, (height - 2 * padding) / 2.f - ((height - 2 * padding) / 2.f) * temperature / 50 + 2 * padding,
                 width - width / 4.f - padding,
                 height - 2 * padding);

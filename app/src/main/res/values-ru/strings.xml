@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Погода</string>
+    <string name="nav_header_title">Антон Герасимов</string>
+    <string name="nav_header_subtitle">geraa1985@gmail.com</string>
+    <string name="menu_home">Погода</string>
+    <string name="menu_list">Список городов</string>
+    <string name="menu_settings">Настройки</string>
+    <string name="feels_like">ощущается как: </string>
+
+    <string name="temperature_units">Температура</string>
+    <string name="pressure_units">Давление</string>
+    <string name="wind_speed_units">Скорость ветра</string>
+    <string name="theme">Тема</string>
+    <string name="gpa">гПа</string>
+    <string name="mm">мм</string>
+    <string name="m_s">м/с</string>
+    <string name="km_h">км/ч</string>
+    <string name="day">дневная</string>
+    <string name="night">ночная</string>
+    <string name="enter_city">Введите город</string>
+    <string name="wrong_name_message">Неверный формат</string>
+
+</resources>

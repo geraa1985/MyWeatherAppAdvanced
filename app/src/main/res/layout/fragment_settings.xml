@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    tools:context=".ui.settings.SettingsFragment">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:text="@string/temperature_units"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/rgTemp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <RadioButton
+                android:id="@+id/degC"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/deg_c"
+                android:textSize="30sp" />
+
+            <RadioButton
+                android:id="@+id/degF"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/deg_f"
+                android:textSize="30sp" />
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:text="@string/pressure_units"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/rgPress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <RadioButton
+                android:id="@+id/gPa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/gpa"
+                android:textSize="30sp" />
+
+            <RadioButton
+                android:id="@+id/mm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/mm"
+                android:textSize="30sp" />
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:text="@string/wind_speed_units"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/rgWind"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <RadioButton
+                android:id="@+id/ms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/m_s"
+                android:textSize="30sp" />
+
+            <RadioButton
+                android:id="@+id/kmh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/km_h"
+                android:textSize="30sp" />
+        </RadioGroup>
+
+        <!--<TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:text="@string/theme"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/rgTheme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <RadioButton
+                android:id="@+id/day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/day"
+                android:textSize="30sp" />
+
+            <RadioButton
+                android:id="@+id/night"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/night"
+                android:textSize="30sp" />
+        </RadioGroup>-->
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

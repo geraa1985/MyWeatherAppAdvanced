@@ -1,0 +1,17 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="nav_header_vertical_spacing">8dp</dimen>
+    <dimen name="nav_header_height">176dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="settings_text_size">16sp</dimen>
+    <dimen name="radiobutton_height">35dp</dimen>
+    <dimen name="main_info_width">135dp</dimen>
+    <dimen name="main_info_height">85dp</dimen>
+    <dimen name="main_temperature_text_size">40sp</dimen>
+    <dimen name="options_text_size">20sp</dimen>
+    <dimen name="settings_header_margin_top">15dp</dimen>
+    <dimen name="therm_width">15dp</dimen>
+    <dimen name="therm_weight">75dp</dimen>
+</resources>

@@ -9,18 +9,19 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.myweatherappadvanced.R;
 import com.example.myweatherappadvanced.interfaces.OnFragmentInteractionListener;
 import com.example.myweatherappadvanced.ui.list.CitiesListFragment;
+import com.example.myweatherappadvanced.ui.weather.WeatherFragment;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.regex.Pattern;
 
-public class AddCity extends Fragment {
+public class AddCity extends BottomSheetDialogFragment {
 
     private TextInputEditText editText;
     private MaterialButton button;
@@ -33,16 +34,14 @@ public class AddCity extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_add_city, container, false);
-    }
+        View view = inflater.inflate(R.layout.fragment_add_city, container, false);
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        findViews();
+        editText = view.findViewById(R.id.enterCityInput);
+        button = view.findViewById(R.id.buttonOk);
         checkCityField();
         setOnClickBehaviourToOK();
+
+        return view;
     }
 
     @Override
@@ -56,17 +55,18 @@ public class AddCity extends Fragment {
         }
     }
 
-    private void findViews() {
-        editText = requireActivity().findViewById(R.id.enterCityInput);
-        button = requireActivity().findViewById(R.id.buttonOk);
-    }
-
     private void setOnClickBehaviourToOK() {
         button.setOnClickListener((v) -> {
             editText.clearFocus();
             if (newCityName != null) {
                 if (isValid) {
-                    mListener.onFragmentInteraction(newCityName);
+                    dismiss();
+                    if (requireActivity().getSupportFragmentManager().getFragments().get(0).getClass() == WeatherFragment.class) {
+                        WeatherFragment fragment = (WeatherFragment) requireActivity().getSupportFragmentManager().getFragments().get(0);
+                        fragment.getCity(newCityName);
+                    } else {
+                        mListener.onFragmentInteraction(newCityName);
+                    }
                 }
             } else {
                 FragmentTransaction fragmentTransaction = requireActivity().getSupportFragmentManager().beginTransaction();

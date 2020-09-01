@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="colorSideNavBarEnd" format="color" />
+    <attr name="colorSideNavBarCenter" format="color" />
+
+    <declare-styleable name="Thermometer">
+        <attr name="battery_color" format="color" />
+        <attr name="level_color" format="color" />
+        <attr name="currentTemp" format="integer" />
+    </declare-styleable>
+
+</resources>

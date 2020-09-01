@@ -13,13 +13,16 @@ import androidx.fragment.app.Fragment;
 
 import com.example.myweatherappadvanced.R;
 import com.example.myweatherappadvanced.settings.Settings;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class SettingsFragment extends Fragment {
+
+    private FloatingActionButton fab;
 
     private RadioGroup rgTemp;
     private RadioGroup rgPress;
     private RadioGroup rgWind;
-//    private RadioGroup rgTheme;
+    private RadioGroup rgTheme;
 
     private RadioButton degC;
     private RadioButton degF;
@@ -27,8 +30,8 @@ public class SettingsFragment extends Fragment {
     private RadioButton mm;
     private RadioButton ms;
     private RadioButton kmh;
-//    private RadioButton day;
-//    private RadioButton night;
+    private RadioButton day;
+    private RadioButton night;
 
 
     @Nullable
@@ -42,15 +45,18 @@ public class SettingsFragment extends Fragment {
         super.onStart();
 
         findViews();
+        fab.setVisibility(View.GONE);
         getCheckedPositions();
         onChangeValuesListener();
     }
 
     private void findViews() {
+        fab = requireActivity().findViewById(R.id.fab);
+
         rgTemp = requireActivity().findViewById(R.id.rgTemp);
         rgPress = requireActivity().findViewById(R.id.rgPress);
         rgWind = requireActivity().findViewById(R.id.rgWind);
-//        rgTheme = requireActivity().findViewById(R.id.rgTheme);
+        rgTheme = requireActivity().findViewById(R.id.rgTheme);
 
         degC = requireActivity().findViewById(R.id.degC);
         degF = requireActivity().findViewById(R.id.degF);
@@ -58,8 +64,8 @@ public class SettingsFragment extends Fragment {
         mm = requireActivity().findViewById(R.id.mm);
         ms = requireActivity().findViewById(R.id.ms);
         kmh = requireActivity().findViewById(R.id.kmh);
-//        day = requireActivity().findViewById(R.id.day);
-//        night = requireActivity().findViewById(R.id.night);
+        day = requireActivity().findViewById(R.id.day);
+        night = requireActivity().findViewById(R.id.night);
     }
 
     private void getCheckedPositions() {
@@ -69,15 +75,15 @@ public class SettingsFragment extends Fragment {
         mm.setChecked(Settings.getInstance().isMM());
         ms.setChecked(!Settings.getInstance().isKMH());
         kmh.setChecked(Settings.getInstance().isKMH());
-//        day.setChecked(!Settings.getInstance().isNight());
-//        night.setChecked(Settings.getInstance().isNight());
+        day.setChecked(!Settings.getInstance().isNight());
+        night.setChecked(Settings.getInstance().isNight());
     }
 
     private void onChangeValuesListener() {
         onChangeTempValue();
         onChangePressValue();
         onChangeWindValue();
-//        onChangeThemeValue();
+        onChangeThemeValue();
     }
 
     private void onChangeTempValue() {
@@ -125,20 +131,20 @@ public class SettingsFragment extends Fragment {
         });
     }
 
-//    private void onChangeThemeValue() {
-//        rgTheme.setOnCheckedChangeListener((radioGroup, id) -> {
-//            switch (id) {
-//                case R.id.day:
-//                    Settings.getInstance().setNight(false);
-//                    requireActivity().recreate();
-//                    break;
-//                case R.id.night:
-//                    Settings.getInstance().setNight(true);
-//                    requireActivity().recreate();
-//                    break;
-//                default:
-//                    break;
-//            }
-//        });
-//    }
+    private void onChangeThemeValue() {
+        rgTheme.setOnCheckedChangeListener((radioGroup, id) -> {
+            switch (id) {
+                case R.id.day:
+                    Settings.getInstance().setNight(false);
+                    requireActivity().recreate();
+                    break;
+                case R.id.night:
+                    Settings.getInstance().setNight(true);
+                    requireActivity().recreate();
+                    break;
+                default:
+                    break;
+            }
+        });
+    }
 }

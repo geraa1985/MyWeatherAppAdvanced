@@ -14,6 +14,7 @@ import java.util.Locale;
 import javax.net.ssl.HttpsURLConnection;
 
 public class City {
+
     private String name;
     private int mainTemperature;
     private String weatherImage;
@@ -23,6 +24,8 @@ public class City {
     private int pressure;
     private int windSpeed;
     private int windDirection;
+
+    private Exception exception;
 
     private String lang = Locale.getDefault().getISO3Language().substring(0, 2);
 
@@ -45,6 +48,7 @@ public class City {
                 WeatherRequest weatherRequest = gson.fromJson(result, WeatherRequest.class);
                 displayWeather(weatherRequest);
             } catch (Exception e) {
+                this.exception = e;
                 e.printStackTrace();
             } finally {
                 if (null != urlConnection) {
@@ -124,6 +128,10 @@ public class City {
 
     public int getWindDirection() {
         return windDirection;
+    }
+
+    public Exception getException() {
+        return exception;
     }
 
 }

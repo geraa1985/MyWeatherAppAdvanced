@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="20dp"
-    tools:context=".ui.home.HomeFragment">
+    tools:context=".ui.weather.WeatherFragment">
 
     <TextView
         android:id="@+id/cityName"
@@ -24,10 +24,10 @@
 
     <TextView
         android:id="@+id/mainTemperature"
-        android:layout_width="175dp"
-        android:layout_height="125dp"
+        android:layout_width="@dimen/main_info_width"
+        android:layout_height="@dimen/main_info_height"
         android:gravity="center"
-        android:textSize="60sp"
+        android:textSize="@dimen/main_temperature_text_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cityName"
@@ -36,8 +36,8 @@
 
     <ImageView
         android:id="@+id/weatherImage"
-        android:layout_width="175dp"
-        android:layout_height="125dp"
+        android:layout_width="@dimen/main_info_width"
+        android:layout_height="@dimen/main_info_height"
         android:contentDescription="@string/weather_image_description"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -85,7 +85,8 @@
     </TableRow>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:orientation="vertical"
@@ -117,7 +118,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginStart="10dp"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/options_text_size"
                     tools:text="68%" />
             </TableRow>
 
@@ -133,7 +134,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginEnd="10dp"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/options_text_size"
                     tools:text="3 m/s" />
 
                 <ImageView
@@ -146,8 +147,8 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginTop="20dp"
             android:baselineAligned="false"
             android:orientation="horizontal">
@@ -170,7 +171,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginStart="10dp"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/options_text_size"
                     tools:text="765 mm" />
             </TableRow>
 
@@ -180,14 +181,13 @@
                 android:layout_weight="1"
                 android:gravity="end">
 
-
                 <TextView
                     android:id="@+id/valueWindDirect"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginEnd="10dp"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/options_text_size"
                     tools:text="270°" />
 
                 <ImageView
@@ -199,5 +199,43 @@
             </TableRow>
         </LinearLayout>
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/yandexImage"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="15dp"
+        android:contentDescription="@string/yandex"
+        android:src="@drawable/yandex"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+    <ImageView
+        android:id="@+id/wikiImage"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="15dp"
+        android:contentDescription="@string/wikipedia"
+        android:src="@drawable/wikipedia"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+    <com.example.myweatherappadvanced.customview.Thermometer
+        android:id="@+id/thermometer"
+        android:layout_width="@dimen/therm_width"
+        android:layout_height="@dimen/therm_weight"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/wikiImage"
+        app:layout_constraintStart_toEndOf="@+id/yandexImage"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintVertical_bias="0.5"
+        app:currentTemp="0"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

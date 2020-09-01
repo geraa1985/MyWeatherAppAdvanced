@@ -7,7 +7,7 @@
     <string name="nav_header_desc" translatable="false">Navigation header</string>
     <string name="action_settings" translatable="false">Settings</string>
 
-    <string name="menu_home">Home</string>
+    <string name="menu_weather">Weather</string>
     <string name="menu_list">List of cities</string>
     <string name="menu_settings">Settings</string>
 
@@ -35,4 +35,10 @@
     <string name="ok" translatable="false">OK</string>
     <string name="enter_city">Enter city</string>
     <string name="wrong_name_message">Wrong city name</string>
+    <string name="delete">Delete</string>
+    <string name="clear_all">Clear all</string>
+    <string name="yandex" translatable="false">Yandex</string>
+    <string name="wikipedia" translatable="false">Wikipedia</string>
+    <string name="errorMessage">\ - most likely is not a city on the planet Earth. Study the globe and enter the correct city.\</string>
+    <string name="error_title">Error</string>
 </resources>

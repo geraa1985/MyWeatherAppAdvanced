@@ -1,5 +1,6 @@
 package com.example.myweatherappadvanced.adapters;
 
+import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +17,14 @@ import java.util.LinkedList;
 public class CitiesListRVAdapter extends RecyclerView.Adapter<CitiesListRVAdapter.ViewHolder> {
     private LinkedList<String> citiesList;
     private IRVonCityClick irVonCityClick;
+    private Activity activity;
 
-    public CitiesListRVAdapter(LinkedList<String> citiesList, IRVonCityClick irVonCityClick) {
-        this.citiesList = citiesList;
+    public CitiesListRVAdapter(LinkedList<String> citiesList, IRVonCityClick irVonCityClick, Activity activity) {
+        if (this.citiesList == null) {
+            this.citiesList = citiesList;
+        }
         this.irVonCityClick = irVonCityClick;
+        this.activity = activity;
     }
 
     @NonNull
@@ -34,6 +39,7 @@ public class CitiesListRVAdapter extends RecyclerView.Adapter<CitiesListRVAdapte
         String city = citiesList.get(position);
         holder.setTextToTextView(city);
         holder.setOnItemClick(city);
+        activity.registerForContextMenu(holder.textView);
     }
 
     @Override

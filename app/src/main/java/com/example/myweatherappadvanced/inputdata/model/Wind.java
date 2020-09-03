@@ -2,7 +2,7 @@ package com.example.myweatherappadvanced.inputdata.model;
 
 public class Wind {
     private float speed;
-    private int deg;
+    private long deg;
 
     public float getSpeed() {
         return speed;
@@ -12,7 +12,7 @@ public class Wind {
         this.speed = speed;
     }
 
-    public int getDeg() {
+    public long getDeg() {
         return deg;
     }
 

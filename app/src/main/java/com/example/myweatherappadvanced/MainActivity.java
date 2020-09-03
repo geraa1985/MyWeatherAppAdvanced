@@ -16,7 +16,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.myweatherappadvanced.interfaces.OnFragmentInteractionListener;
+import com.example.myweatherappadvanced.interfaces.OnNewCityClick;
 import com.example.myweatherappadvanced.settings.Settings;
 import com.example.myweatherappadvanced.ui.list.CitiesListFragment;
 import com.example.myweatherappadvanced.ui.settings.SettingsFragment;
@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements OnNewCityClick {
 
     private Toolbar toolbar;
     private DrawerLayout drawer;
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             switch (item.getItemId()) {
                 case R.id.nav_weather: {
                     WeatherFragment fragment = new WeatherFragment();
-                    fragment.getCity(Settings.getInstance().getCitiesList().get(0));
+                    fragment.getCity(Settings.getInstance().getCitiesList().get(0), this);
                     setFragment(fragment);
                     drawer.close();
                     break;
@@ -170,12 +170,11 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     }
 
     @Override
-    public void onFragmentInteraction(String cityName) {
+    public void onCityClick(String cityName) {
         Settings.getInstance().setCityFromList(true);
         WeatherFragment fragment = new WeatherFragment();
-        fragment.getCity(cityName);
         setFragment(fragment);
-        navigationView.setCheckedItem(R.id.nav_weather);
+        fragment.getCity(cityName, this);
     }
 
     @Override

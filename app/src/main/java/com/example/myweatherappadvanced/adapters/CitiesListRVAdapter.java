@@ -10,20 +10,20 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myweatherappadvanced.R;
-import com.example.myweatherappadvanced.interfaces.IRVonCityClick;
+import com.example.myweatherappadvanced.interfaces.OnNewCityClick;
 
 import java.util.LinkedList;
 
 public class CitiesListRVAdapter extends RecyclerView.Adapter<CitiesListRVAdapter.ViewHolder> {
     private LinkedList<String> citiesList;
-    private IRVonCityClick irVonCityClick;
+    private OnNewCityClick onNewCityClick;
     private Activity activity;
 
-    public CitiesListRVAdapter(LinkedList<String> citiesList, IRVonCityClick irVonCityClick, Activity activity) {
+    public CitiesListRVAdapter(LinkedList<String> citiesList, OnNewCityClick onNewCityClick, Activity activity) {
         if (this.citiesList == null) {
             this.citiesList = citiesList;
         }
-        this.irVonCityClick = irVonCityClick;
+        this.onNewCityClick = onNewCityClick;
         this.activity = activity;
     }
 
@@ -61,8 +61,8 @@ public class CitiesListRVAdapter extends RecyclerView.Adapter<CitiesListRVAdapte
 
         void setOnItemClick(String cityName) {
             textView.setOnClickListener((v) -> {
-                if (irVonCityClick != null) {
-                    irVonCityClick.onCityClick(cityName);
+                if (onNewCityClick != null) {
+                    onNewCityClick.onCityClick(cityName);
                 }
             });
         }

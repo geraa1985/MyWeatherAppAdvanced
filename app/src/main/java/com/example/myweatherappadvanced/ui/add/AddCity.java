@@ -12,7 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.myweatherappadvanced.R;
-import com.example.myweatherappadvanced.interfaces.OnFragmentInteractionListener;
+import com.example.myweatherappadvanced.interfaces.OnNewCityClick;
 import com.example.myweatherappadvanced.ui.list.CitiesListFragment;
 import com.example.myweatherappadvanced.ui.weather.WeatherFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -28,7 +28,7 @@ public class AddCity extends BottomSheetDialogFragment {
     private Pattern newCityRules = Pattern.compile("^[A-ZА-ЯЁ\\s][a-zа-яё\\s]{2,}$+|");
     private String newCityName;
     private boolean isValid;
-    private OnFragmentInteractionListener mListener;
+    private OnNewCityClick onNewCityClick;
 
 
     @Nullable
@@ -48,7 +48,7 @@ public class AddCity extends BottomSheetDialogFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            mListener = (OnFragmentInteractionListener) context;
+            onNewCityClick = (OnNewCityClick) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
                     + " должен реализовывать интерфейс OnFragmentInteractionListener");
@@ -63,9 +63,11 @@ public class AddCity extends BottomSheetDialogFragment {
                     dismiss();
                     if (requireActivity().getSupportFragmentManager().getFragments().get(0).getClass() == WeatherFragment.class) {
                         WeatherFragment fragment = (WeatherFragment) requireActivity().getSupportFragmentManager().getFragments().get(0);
-                        fragment.getCity(newCityName);
+                        fragment.getCity(newCityName, requireContext());
                     } else {
-                        mListener.onFragmentInteraction(newCityName);
+                        if (onNewCityClick != null) {
+                            onNewCityClick.onCityClick(newCityName);
+                        }
                     }
                 }
             } else {

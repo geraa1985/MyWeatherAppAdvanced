@@ -1,6 +1,5 @@
 package com.example.myweatherappadvanced.ui.list;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,16 +14,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myweatherappadvanced.R;
 import com.example.myweatherappadvanced.adapters.CitiesListRVAdapter;
-import com.example.myweatherappadvanced.interfaces.IRVonCityClick;
-import com.example.myweatherappadvanced.interfaces.OnFragmentInteractionListener;
+import com.example.myweatherappadvanced.interfaces.OnNewCityClick;
 import com.example.myweatherappadvanced.settings.Settings;
 import com.example.myweatherappadvanced.ui.add.AddCity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class CitiesListFragment extends Fragment implements IRVonCityClick {
+public class CitiesListFragment extends Fragment {
 
     private RecyclerView cityRV;
-    private OnFragmentInteractionListener mListener;
     private FloatingActionButton fab;
 
     @Nullable
@@ -43,17 +40,6 @@ public class CitiesListFragment extends Fragment implements IRVonCityClick {
         clickOnFAB();
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        try {
-            mListener = (OnFragmentInteractionListener) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString()
-                    + " должен реализовывать интерфейс OnFragmentInteractionListener");
-        }
-    }
-
     private void findViews() {
         cityRV = requireActivity().findViewById(R.id.citiesRV);
         fab = requireActivity().findViewById(R.id.fab);
@@ -64,14 +50,8 @@ public class CitiesListFragment extends Fragment implements IRVonCityClick {
         lm.setOrientation(RecyclerView.VERTICAL);
         cityRV.setLayoutManager(lm);
         cityRV.addItemDecoration(new DividerItemDecoration(requireActivity(), DividerItemDecoration.VERTICAL));
-        CitiesListRVAdapter adapter = new CitiesListRVAdapter(Settings.getInstance().getCitiesList(), this, getActivity());
+        CitiesListRVAdapter adapter = new CitiesListRVAdapter(Settings.getInstance().getCitiesList(), (OnNewCityClick) requireActivity(), getActivity());
         cityRV.setAdapter(adapter);
-    }
-
-    @Override
-    public void onCityClick(String cityName) {
-        fab.setVisibility(View.GONE);
-        mListener.onFragmentInteraction(cityName);
     }
 
     private void clickOnFAB() {

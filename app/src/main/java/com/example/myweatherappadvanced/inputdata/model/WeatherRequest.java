@@ -1,13 +1,30 @@
 package com.example.myweatherappadvanced.inputdata.model;
 
 public class WeatherRequest {
-    private Main main;
-    private Sys sys;
-    private Wind wind;
-    private Weather[] weather;
-    private int visibility;
-    private int timezone;
+
+    private long id;
     private String name;
+    private long timezone;
+    private long visibility;
+    private long cod;
+    private String base;
+    private long dt;
+
+
+    private Coord coord;
+    private Weather[] weather;
+    private Main main;
+    private Wind wind;
+    private Clouds clouds;
+    private Sys sys;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -17,7 +34,7 @@ public class WeatherRequest {
         this.name = name;
     }
 
-    public int getTimezone() {
+    public long getTimezone() {
         return timezone;
     }
 
@@ -25,12 +42,36 @@ public class WeatherRequest {
         this.timezone = timezone;
     }
 
-    public int getVisibility() {
+    public long getVisibility() {
         return visibility;
     }
 
     public void setVisibility(int visibility) {
         this.visibility = visibility;
+    }
+
+    public long getCod() {
+        return cod;
+    }
+
+    public void setCod(long cod) {
+        this.cod = cod;
+    }
+
+    public String getBase() {
+        return base;
+    }
+
+    public void setBase(String base) {
+        this.base = base;
+    }
+
+    public long getDt() {
+        return dt;
+    }
+
+    public void setDt(long dt) {
+        this.dt = dt;
     }
 
     public Main getMain() {
@@ -64,4 +105,21 @@ public class WeatherRequest {
     public void setWeather(Weather[] weather) {
         this.weather = weather;
     }
+
+    public Coord getCoord() {
+        return coord;
+    }
+
+    public void setCoord(Coord coord) {
+        this.coord = coord;
+    }
+
+    public Clouds getClouds() {
+        return clouds;
+    }
+
+    public void setClouds(Clouds clouds) {
+        this.clouds = clouds;
+    }
+
 }

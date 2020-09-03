@@ -18,7 +18,7 @@ public class Thermometer extends View {
     private int thermColor;
     private int temperatureColor;
 
-    private int temperature;
+    private long temperature;
 
     private RectF thermRectangle = new RectF();
     private RectF tempRectangle = new RectF();
@@ -97,7 +97,7 @@ public class Thermometer extends View {
         canvas.drawRect(tempRectangle, tempPaint);
     }
 
-    public void setTemperature(int temperature) {
+    public void setTemperature(long temperature) {
         this.temperature = temperature;
         if (temperature > 30) {
             tempPaint.setColor(Color.RED);

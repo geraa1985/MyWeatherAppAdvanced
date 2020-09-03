@@ -1,5 +1,7 @@
 package com.example.myweatherappadvanced.inputdata;
 
+import android.content.Context;
+
 import com.example.myweatherappadvanced.BuildConfig;
 import com.example.myweatherappadvanced.inputdata.model.WeatherRequest;
 import com.google.gson.Gson;
@@ -13,28 +15,15 @@ import java.util.Locale;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class City {
-
-    private String name;
-    private int mainTemperature;
-    private String weatherImage;
-    private String description;
-    private int humidity;
-    private int feelsLikeTemp;
-    private int pressure;
-    private int windSpeed;
-    private int windDirection;
+public class OpenWeatherNetwork {
 
     private Exception exception;
 
+    private CurrentCity currentCity;
+
     private String lang = Locale.getDefault().getISO3Language().substring(0, 2);
 
-    public City(String name) {
-        this.name = name;
-        this.getWeather();
-    }
-
-    public void getWeather() {
+    public void getWeather(String name, Context context) {
         try {
             final URL uri = new URL("https://api.openweathermap.org/data/2.5/weather?q=" + name + "&lang=" + lang + "&units=metric&appid=" + BuildConfig.WEATHER_API_KEY);
             HttpsURLConnection urlConnection = null;
@@ -46,7 +35,7 @@ public class City {
                 String result = getLines(in);
                 Gson gson = new Gson();
                 WeatherRequest weatherRequest = gson.fromJson(result, WeatherRequest.class);
-                displayWeather(weatherRequest);
+                this.currentCity = new CurrentCity(weatherRequest, context);
             } catch (Exception e) {
                 this.exception = e;
                 e.printStackTrace();
@@ -60,19 +49,7 @@ public class City {
         }
     }
 
-    private void displayWeather(WeatherRequest weatherRequest) {
-        this.name = weatherRequest.getName();
-        this.mainTemperature = Math.round(weatherRequest.getMain().getTemp());
-        this.feelsLikeTemp = Math.round(weatherRequest.getMain().getFeels_like());
-        this.weatherImage = "http://openweathermap.org/img/wn/" + weatherRequest.getWeather()[0].getIcon() + "@2x.png";
-        this.description = weatherRequest.getWeather()[0].getDescription();
-        this.humidity = weatherRequest.getMain().getHumidity();
-        this.pressure = weatherRequest.getMain().getPressure();
-        this.windSpeed = Math.round(weatherRequest.getWind().getSpeed());
-        this.windDirection = weatherRequest.getWind().getDeg();
-    }
-
-    private String getLines(BufferedReader reader) {
+    private static String getLines(BufferedReader reader) {
         StringBuilder rawData = new StringBuilder(1024);
 
         while (true) {
@@ -94,44 +71,11 @@ public class City {
         return rawData.toString();
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public int getMainTemperature() {
-        return mainTemperature;
-    }
-
-    public String getWeatherImage() {
-        return weatherImage;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public int getHumidity() {
-        return humidity;
-    }
-
-    public int getFeelsLikeTemp() {
-        return feelsLikeTemp;
-    }
-
-    public int getPressure() {
-        return pressure;
-    }
-
-    public int getWindSpeed() {
-        return windSpeed;
-    }
-
-    public int getWindDirection() {
-        return windDirection;
+    public CurrentCity getCurrentCity() {
+        return currentCity;
     }
 
     public Exception getException() {
         return exception;
     }
-
 }

@@ -1,6 +1,7 @@
 package com.example.myweatherappadvanced.ui.weather;
 
-import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,13 +15,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.example.myweatherappadvanced.R;
-import com.example.myweatherappadvanced.calculate.Calculator;
 import com.example.myweatherappadvanced.customview.Thermometer;
-import com.example.myweatherappadvanced.inputdata.City;
+import com.example.myweatherappadvanced.inputdata.OpenWeatherNetwork;
 import com.example.myweatherappadvanced.settings.Settings;
 import com.example.myweatherappadvanced.ui.add.AddCity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -43,8 +42,6 @@ public class WeatherFragment extends Fragment {
     private ImageView yandexImage;
     private ImageView wikiImage;
 
-    private Handler handler = new Handler(Looper.getMainLooper());
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -59,7 +56,7 @@ public class WeatherFragment extends Fragment {
         fab.setVisibility(View.GONE);
 
         if (!Settings.getInstance().isCityFromList()) {
-            getCity(Settings.getInstance().getCitiesList().get(0));
+            getCity(Settings.getInstance().getCitiesList().get(0), getContext());
         }
         Settings.getInstance().setCityFromList(false);
 
@@ -87,69 +84,33 @@ public class WeatherFragment extends Fragment {
         thermometer = requireActivity().findViewById(R.id.thermometer);
     }
 
-    @SuppressLint("SetTextI18n")
-    public void getCity(String cityName) {
-        new Thread(() -> {
-            City city = new City(cityName);
-            handler.post(() -> {
-                thermometer.setTemperature(city.getMainTemperature());
-                Picasso.get().load(city.getWeatherImage()).into(weatherImageView);
-                weatherDescription.setText(city.getDescription());
-                humidityView.setText(city.getHumidity() + requireActivity().getResources().getString(R.string.percent));
-                windDirectView.setText(city.getWindDirection() + requireActivity().getResources().getString(R.string.deg));
+    public void getCity(String cityName, Context context) {
 
-                if (Settings.getInstance().isF()) {
-                    int mainTemp = Calculator.cToF(city.getMainTemperature());
-                    int feelsLikeTemp = Calculator.cToF(city.getFeelsLikeTemp());
-                    if (mainTemp > 0) {
-                        mainTemperatureView.setText("+" + mainTemp + requireActivity().getResources().getString(R.string.deg_f));
-                    } else {
-                        mainTemperatureView.setText(mainTemp + requireActivity().getResources().getString(R.string.deg_f));
-                    }
-                    if (feelsLikeTemp > 0) {
-                        feelsLikeTempView.setText("+" + feelsLikeTemp + requireActivity().getResources().getString(R.string.deg_f));
-                    } else {
-                        feelsLikeTempView.setText(feelsLikeTemp + requireActivity().getResources().getString(R.string.deg_f));
-                    }
-                } else {
-                    if (city.getMainTemperature() > 0) {
-                        mainTemperatureView.setText("+" + city.getMainTemperature() + requireActivity().getResources().getString(R.string.deg_c));
-                    } else {
-                        mainTemperatureView.setText(city.getMainTemperature() + requireActivity().getResources().getString(R.string.deg_c));
-                    }
-                    if (city.getFeelsLikeTemp() > 0) {
-                        feelsLikeTempView.setText("+" + city.getFeelsLikeTemp() + requireActivity().getResources().getString(R.string.deg_c));
-                    } else {
-                        feelsLikeTempView.setText(city.getFeelsLikeTemp() + requireActivity().getResources().getString(R.string.deg_c));
-                    }
-                }
+        Handler handler = new Handler(Looper.getMainLooper());
 
-                if (Settings.getInstance().isMM()) {
-                    int pressure = Calculator.gPaToMm(city.getPressure());
-                    pressureView.setText(pressure + " " + requireActivity().getResources().getString(R.string.mm));
-                } else {
-                    pressureView.setText(city.getPressure() + " " + requireActivity().getResources().getString(R.string.gpa));
-                }
-
-                if (Settings.getInstance().isKMH()) {
-                    int windSpeed = Calculator.msToKmh(city.getWindSpeed());
-                    windSpeedView.setText(windSpeed + " " + requireActivity().getResources().getString(R.string.km_h));
-                } else {
-                    windSpeedView.setText(city.getWindSpeed() + " " + requireActivity().getResources().getString(R.string.m_s));
-                }
-
-                if (city.getException() == null) {
-                    cityNameView.setText(city.getName());
-                    Settings.getInstance().getCitiesList().remove(city.getName());
-                    Settings.getInstance().getCitiesList().addFirst(city.getName());
-                } else {
+        new Thread(()->{
+            OpenWeatherNetwork openWeatherNetwork = new OpenWeatherNetwork();
+            openWeatherNetwork.getWeather(cityName, context);
+            handler.post(()->{
+                if (openWeatherNetwork.getException() != null) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
                     builder.setTitle(R.string.error_title)
                             .setCancelable(false)
-                            .setMessage(city.getName() + getString(R.string.errorMessage))
+                            .setMessage(cityName + getString(R.string.errorMessage))
                             .setPositiveButton(R.string.ok, (dialogInterface, i) -> new AddCity().show(requireActivity().getSupportFragmentManager(), "AddCityDialog"));
                     AlertDialog alert = builder.create();
                     alert.show();
+                } else {
+                    cityNameView.setText(openWeatherNetwork.getCurrentCity().getName());
+                    mainTemperatureView.setText(openWeatherNetwork.getCurrentCity().getTemperature());
+                    Picasso.get().load(openWeatherNetwork.getCurrentCity().getImgUrl()).into(weatherImageView);
+                    feelsLikeTempView.setText(openWeatherNetwork.getCurrentCity().getFeelsLikeTemp());
+                    weatherDescription.setText(openWeatherNetwork.getCurrentCity().getWeatherDescription());
+                    humidityView.setText(openWeatherNetwork.getCurrentCity().getHumidity());
+                    pressureView.setText(openWeatherNetwork.getCurrentCity().getPressure());
+                    windSpeedView.setText(openWeatherNetwork.getCurrentCity().getWindSpeed());
+                    windDirectView.setText(openWeatherNetwork.getCurrentCity().getWindDirect());
+                    thermometer.setTemperature(openWeatherNetwork.getCurrentCity().getTemp());
                 }
             });
         }).start();

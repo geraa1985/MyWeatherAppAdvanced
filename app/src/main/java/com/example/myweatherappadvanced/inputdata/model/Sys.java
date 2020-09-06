@@ -1,28 +1,19 @@
 package com.example.myweatherappadvanced.inputdata.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class Sys {
 
-    private long type;
-    private long id;
+    @SerializedName("country")
+    @Expose
     private String country;
-    private long sunrise;
-    private long sunset;
-
-    public long getType() {
-        return type;
-    }
-
-    public void setType(long type) {
-        this.type = type;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
+    @SerializedName("sunrise")
+    @Expose
+    private Long sunrise;
+    @SerializedName("sunset")
+    @Expose
+    private Long sunset;
 
     public String getCountry() {
         return country;
@@ -32,19 +23,20 @@ public class Sys {
         this.country = country;
     }
 
-    public long getSunrise() {
+    public Long getSunrise() {
         return sunrise;
     }
 
-    public void setSunrise(int sunrise) {
+    public void setSunrise(Long sunrise) {
         this.sunrise = sunrise;
     }
 
-    public long getSunset() {
+    public Long getSunset() {
         return sunset;
     }
 
-    public void setSunset(int sunset) {
+    public void setSunset(Long sunset) {
         this.sunset = sunset;
     }
+
 }

@@ -9,6 +9,8 @@ import com.example.myweatherappadvanced.settings.Settings;
 
 public class CurrentCity {
 
+    private static CurrentCity instance;
+
     private String name;
     private String temperature;
     private String imgUrl;
@@ -20,22 +22,31 @@ public class CurrentCity {
     private String windDirect;
     private long temp;
 
-    public CurrentCity(WeatherRequest city, Context context) {
+    private CurrentCity() {}
+
+    public static CurrentCity getInstance() {
+        if (instance == null){
+            instance = new CurrentCity();
+        }
+        return instance;
+    }
+
+    public void setCurrentCity(WeatherRequest city, Context context) {
 
         this.name = city.getName();
         Settings.getInstance().getCitiesList().remove(city.getName());
         Settings.getInstance().getCitiesList().addFirst(city.getName());
 
 
-        this.imgUrl = "http://openweathermap.org/img/wn/" + city.getWeather()[0].getIcon() + "@2x.png";
-        this.weatherDescription = city.getWeather()[0].getDescription();
+        this.imgUrl = "http://openweathermap.org/img/wn/" + city.getWeather().get(0).getIcon() + "@2x.png";
+        this.weatherDescription = city.getWeather().get(0).getDescription();
         this.humidity = city.getMain().getHumidity() + context.getResources().getString(R.string.percent);
         this.windDirect = city.getWind().getDeg() + context.getResources().getString(R.string.deg);
         this.temp = Math.round(city.getMain().getTemp());
 
         if (Settings.getInstance().isF()) {
-            long mainTemp = Calculator.cToF(Math.round(city.getMain().getTemp()));
-            long feelsLikeTemp = Calculator.cToF(Math.round(city.getMain().getFeels_like()));
+            long mainTemp = Calculator.cToF(city.getMain().getTemp());
+            long feelsLikeTemp = Calculator.cToF(city.getMain().getFeelsLike());
             if (mainTemp > 0) {
                 this.temperature = "+" + mainTemp + context.getResources().getString(R.string.deg_f);
             } else {
@@ -52,10 +63,10 @@ public class CurrentCity {
             } else {
                 this.temperature = Math.round(city.getMain().getTemp()) + context.getResources().getString(R.string.deg_c);
             }
-            if (Math.round(city.getMain().getFeels_like()) > 0) {
-                this.feelsLikeTemp = "+" + Math.round(city.getMain().getFeels_like()) + context.getResources().getString(R.string.deg_c);
+            if (Math.round(city.getMain().getFeelsLike()) > 0) {
+                this.feelsLikeTemp = "+" + Math.round(city.getMain().getFeelsLike()) + context.getResources().getString(R.string.deg_c);
             } else {
-                this.feelsLikeTemp = Math.round(city.getMain().getFeels_like()) + context.getResources().getString(R.string.deg_c);
+                this.feelsLikeTemp = Math.round(city.getMain().getFeelsLike()) + context.getResources().getString(R.string.deg_c);
             }
         }
 

@@ -2,80 +2,82 @@ package com.example.myweatherappadvanced.inputdata;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.example.myweatherappadvanced.BuildConfig;
 import com.example.myweatherappadvanced.inputdata.model.WeatherRequest;
-import com.google.gson.Gson;
+import com.example.myweatherappadvanced.interfaces.OpenWeatherRetrofitAPI;
+import com.example.myweatherappadvanced.ui.weather.WeatherFragment;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Locale;
 
-import javax.net.ssl.HttpsURLConnection;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class OpenWeatherNetwork {
 
-    private Exception exception;
+    private static OpenWeatherNetwork instance;
 
-    private CurrentCity currentCity;
+    private CurrentCity currentCity = CurrentCity.getInstance();
 
     private String lang = Locale.getDefault().getISO3Language().substring(0, 2);
 
-    public void getWeather(String name, Context context) {
-        try {
-            final URL uri = new URL("https://api.openweathermap.org/data/2.5/weather?q=" + name + "&lang=" + lang + "&units=metric&appid=" + BuildConfig.WEATHER_API_KEY);
-            HttpsURLConnection urlConnection = null;
-            try {
-                urlConnection = (HttpsURLConnection) uri.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.setReadTimeout(10000);
-                BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                String result = getLines(in);
-                Gson gson = new Gson();
-                WeatherRequest weatherRequest = gson.fromJson(result, WeatherRequest.class);
-                this.currentCity = new CurrentCity(weatherRequest, context);
-            } catch (Exception e) {
-                this.exception = e;
-                e.printStackTrace();
-            } finally {
-                if (null != urlConnection) {
-                    urlConnection.disconnect();
-                }
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+    private static final String BASE_URL = "https://api.openweathermap.org/";
+
+    private OpenWeatherNetwork() {}
+
+    public static OpenWeatherNetwork getInstance() {
+        if (instance == null) {
+            instance = new OpenWeatherNetwork();
         }
+        return instance;
     }
 
-    private static String getLines(BufferedReader reader) {
-        StringBuilder rawData = new StringBuilder(1024);
+    private Retrofit retrofit = new Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
 
-        while (true) {
-            try {
-                String tempVariable = reader.readLine();
-                if (tempVariable == null) break;
-                rawData.append(tempVariable).append("\n");
-            } catch (IOException e) {
-                e.printStackTrace();
+
+    public void requestRetrofit(String cityName, Context context, WeatherFragment fragment) {
+        OpenWeatherRetrofitAPI openWeatherRetrofitAPI = retrofit.create(OpenWeatherRetrofitAPI.class);
+        String units = "metric";
+        String apiKey = BuildConfig.WEATHER_API_KEY;
+
+        openWeatherRetrofitAPI.loadWeather(cityName, lang, units, apiKey).enqueue(new Callback<WeatherRequest>() {
+            @Override
+            public void onResponse(@NonNull Call<WeatherRequest> call, @NonNull Response<WeatherRequest> response) {
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        WeatherRequest weatherRequest = response.body();
+                        currentCity.setCurrentCity(weatherRequest, context);
+                        fragment.setWeather();
+                    }
+                } else {
+                    ResponseBody errorBody = response.errorBody();
+                    try {
+                        if (errorBody != null) {
+                            fragment.setErrorDialog(errorBody.string());
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-        }
 
-        try {
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            @Override
+            public void onFailure(@NonNull Call<WeatherRequest> call, @NonNull Throwable t) {
 
-        return rawData.toString();
+            }
+        });
     }
 
     public CurrentCity getCurrentCity() {
         return currentCity;
-    }
-
-    public Exception getException() {
-        return exception;
     }
 }

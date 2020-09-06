@@ -1,23 +1,31 @@
 package com.example.myweatherappadvanced.inputdata.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class Coord {
 
-    private float lon;
-    private float lat;
+    @SerializedName("lon")
+    @Expose
+    private Double lon;
+    @SerializedName("lat")
+    @Expose
+    private Double lat;
 
-    public float getLon() {
+    public Double getLon() {
         return lon;
     }
 
-    public void setLon(float lon) {
+    public void setLon(Double lon) {
         this.lon = lon;
     }
 
-    public float getLat() {
+    public Double getLat() {
         return lat;
     }
 
-    public void setLat(float lat) {
+    public void setLat(Double lat) {
         this.lat = lat;
     }
+
 }

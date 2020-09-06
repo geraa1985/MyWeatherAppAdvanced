@@ -1,7 +1,7 @@
 package com.example.myweatherappadvanced.calculate;
 
 public class Calculator {
-    public static long cToF(long valC) {
+    public static long cToF(Double valC) {
         return (int) Math.round(valC * 1.8 + 32);
     }
 
@@ -9,7 +9,7 @@ public class Calculator {
         return (int) Math.round(valGPa * 0.75);
     }
 
-    public static long msToKmh(float valMs) {
+    public static long msToKmh(Double valMs) {
         return (int) Math.round(valMs * 3.6);
     }
 }

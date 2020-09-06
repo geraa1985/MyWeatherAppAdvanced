@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +36,8 @@ public class WeatherFragment extends Fragment {
     private FloatingActionButton fab;
 
     private Thermometer thermometer;
+
+    OpenWeatherNetwork openWeatherNetwork = OpenWeatherNetwork.getInstance();
 
     private ImageView yandexImage;
     private ImageView wikiImage;
@@ -85,35 +85,30 @@ public class WeatherFragment extends Fragment {
     }
 
     public void getCity(String cityName, Context context) {
+        openWeatherNetwork.requestRetrofit(cityName, context, this);
+    }
 
-        Handler handler = new Handler(Looper.getMainLooper());
+    public void setWeather() {
+        cityNameView.setText(openWeatherNetwork.getCurrentCity().getName());
+        mainTemperatureView.setText(openWeatherNetwork.getCurrentCity().getTemperature());
+        Picasso.get().load(openWeatherNetwork.getCurrentCity().getImgUrl()).into(weatherImageView);
+        feelsLikeTempView.setText(openWeatherNetwork.getCurrentCity().getFeelsLikeTemp());
+        weatherDescription.setText(openWeatherNetwork.getCurrentCity().getWeatherDescription());
+        humidityView.setText(openWeatherNetwork.getCurrentCity().getHumidity());
+        pressureView.setText(openWeatherNetwork.getCurrentCity().getPressure());
+        windSpeedView.setText(openWeatherNetwork.getCurrentCity().getWindSpeed());
+        windDirectView.setText(openWeatherNetwork.getCurrentCity().getWindDirect());
+        thermometer.setTemperature(openWeatherNetwork.getCurrentCity().getTemp());
+    }
 
-        new Thread(()->{
-            OpenWeatherNetwork openWeatherNetwork = new OpenWeatherNetwork();
-            openWeatherNetwork.getWeather(cityName, context);
-            handler.post(()->{
-                if (openWeatherNetwork.getException() != null) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
-                    builder.setTitle(R.string.error_title)
-                            .setCancelable(false)
-                            .setMessage(cityName + getString(R.string.errorMessage))
-                            .setPositiveButton(R.string.ok, (dialogInterface, i) -> new AddCity().show(requireActivity().getSupportFragmentManager(), "AddCityDialog"));
-                    AlertDialog alert = builder.create();
-                    alert.show();
-                } else {
-                    cityNameView.setText(openWeatherNetwork.getCurrentCity().getName());
-                    mainTemperatureView.setText(openWeatherNetwork.getCurrentCity().getTemperature());
-                    Picasso.get().load(openWeatherNetwork.getCurrentCity().getImgUrl()).into(weatherImageView);
-                    feelsLikeTempView.setText(openWeatherNetwork.getCurrentCity().getFeelsLikeTemp());
-                    weatherDescription.setText(openWeatherNetwork.getCurrentCity().getWeatherDescription());
-                    humidityView.setText(openWeatherNetwork.getCurrentCity().getHumidity());
-                    pressureView.setText(openWeatherNetwork.getCurrentCity().getPressure());
-                    windSpeedView.setText(openWeatherNetwork.getCurrentCity().getWindSpeed());
-                    windDirectView.setText(openWeatherNetwork.getCurrentCity().getWindDirect());
-                    thermometer.setTemperature(openWeatherNetwork.getCurrentCity().getTemp());
-                }
-            });
-        }).start();
+    public void setErrorDialog(String errorMassage) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        builder.setTitle(R.string.error_title)
+                .setCancelable(false)
+                .setMessage(errorMassage)
+                .setPositiveButton(R.string.ok, (dialogInterface, i) -> new AddCity().show(requireActivity().getSupportFragmentManager(), "AddCityDialog"));
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     private void onClickYandex() {

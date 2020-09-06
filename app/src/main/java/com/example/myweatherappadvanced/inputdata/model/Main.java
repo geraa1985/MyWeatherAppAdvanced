@@ -1,78 +1,97 @@
 package com.example.myweatherappadvanced.inputdata.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class Main {
 
-    private float temp;
-    private float feels_like;
-    private float temp_min;
-    private float temp_max;
-    private long pressure;
-    private long humidity;
-    private long sea_level;
-    private long grnd_level;
+    @SerializedName("temp")
+    @Expose
+    private Double temp;
+    @SerializedName("feels_like")
+    @Expose
+    private Double feelsLike;
+    @SerializedName("temp_min")
+    @Expose
+    private Double tempMin;
+    @SerializedName("temp_max")
+    @Expose
+    private Double tempMax;
+    @SerializedName("pressure")
+    @Expose
+    private Long pressure;
+    @SerializedName("humidity")
+    @Expose
+    private Long humidity;
+    @SerializedName("sea_level")
+    @Expose
+    private Long seaLevel;
+    @SerializedName("grnd_level")
+    @Expose
+    private Long grndLevel;
 
-
-    public float getTemp() {
+    public Double getTemp() {
         return temp;
     }
 
-    public void setTemp(float temp) {
+    public void setTemp(Double temp) {
         this.temp = temp;
     }
 
-    public float getFeels_like() {
-        return feels_like;
+    public Double getFeelsLike() {
+        return feelsLike;
     }
 
-    public void setFeels_like(float feels_like) {
-        this.feels_like = feels_like;
+    public void setFeelsLike(Double feelsLike) {
+        this.feelsLike = feelsLike;
     }
 
-    public float getTemp_min() {
-        return temp_min;
+    public Double getTempMin() {
+        return tempMin;
     }
 
-    public void setTemp_min(long temp_min) {
-        this.temp_min = temp_min;
+    public void setTempMin(Double tempMin) {
+        this.tempMin = tempMin;
     }
 
-    public float getTemp_max() {
-        return temp_max;
+    public Double getTempMax() {
+        return tempMax;
     }
 
-    public void setTemp_max(long temp_max) {
-        this.temp_max = temp_max;
+    public void setTempMax(Double tempMax) {
+        this.tempMax = tempMax;
     }
 
-    public long getPressure() {
+    public Long getPressure() {
         return pressure;
     }
 
-    public void setPressure(int pressure) {
+    public void setPressure(Long pressure) {
         this.pressure = pressure;
     }
 
-    public long getHumidity() {
+    public Long getHumidity() {
         return humidity;
     }
 
-    public void setHumidity(int humidity) {
+    public void setHumidity(Long humidity) {
         this.humidity = humidity;
     }
 
-    public long getSea_level() {
-        return sea_level;
+    public Long getSeaLevel() {
+        return seaLevel;
     }
 
-    public void setSea_level(long sea_level) {
-        this.sea_level = sea_level;
+    public void setSeaLevel(Long seaLevel) {
+        this.seaLevel = seaLevel;
     }
 
-    public long getGrnd_level() {
-        return grnd_level;
+    public Long getGrndLevel() {
+        return grndLevel;
     }
 
-    public void setGrnd_level(long grnd_level) {
-        this.grnd_level = grnd_level;
+    public void setGrndLevel(Long grndLevel) {
+        this.grndLevel = grndLevel;
     }
+
 }

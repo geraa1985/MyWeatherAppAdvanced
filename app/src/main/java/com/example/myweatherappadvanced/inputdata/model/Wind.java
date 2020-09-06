@@ -1,22 +1,31 @@
 package com.example.myweatherappadvanced.inputdata.model;
 
-public class Wind {
-    private float speed;
-    private long deg;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
-    public float getSpeed() {
+public class Wind {
+
+    @SerializedName("speed")
+    @Expose
+    private Double speed;
+    @SerializedName("deg")
+    @Expose
+    private Long deg;
+
+    public Double getSpeed() {
         return speed;
     }
 
-    public void setSpeed(int speed) {
+    public void setSpeed(Double speed) {
         this.speed = speed;
     }
 
-    public long getDeg() {
+    public Long getDeg() {
         return deg;
     }
 
-    public void setDeg(int deg) {
+    public void setDeg(Long deg) {
         this.deg = deg;
     }
+
 }

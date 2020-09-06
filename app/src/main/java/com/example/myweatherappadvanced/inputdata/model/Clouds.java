@@ -1,14 +1,20 @@
 package com.example.myweatherappadvanced.inputdata.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class Clouds {
 
-    private long all;
+    @SerializedName("all")
+    @Expose
+    private Long all;
 
-    public long getAll() {
+    public Long getAll() {
         return all;
     }
 
-    public void setAll(long all) {
+    public void setAll(Long all) {
         this.all = all;
     }
+
 }

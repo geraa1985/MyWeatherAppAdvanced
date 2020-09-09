@@ -15,6 +15,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         android:supportsRtl="true"
+        android:name=".db.App"
         tools:targetApi="m"
         tools:ignore="AllowBackup">
         <activity

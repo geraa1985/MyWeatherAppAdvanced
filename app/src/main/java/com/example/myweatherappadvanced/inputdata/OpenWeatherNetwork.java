@@ -5,6 +5,9 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.example.myweatherappadvanced.BuildConfig;
+import com.example.myweatherappadvanced.db.App;
+import com.example.myweatherappadvanced.db.AppDatabase;
+import com.example.myweatherappadvanced.db.CityDAO;
 import com.example.myweatherappadvanced.inputdata.model.WeatherRequest;
 import com.example.myweatherappadvanced.interfaces.OpenWeatherRetrofitAPI;
 import com.example.myweatherappadvanced.ui.weather.WeatherFragment;
@@ -57,6 +60,11 @@ public class OpenWeatherNetwork {
                         WeatherRequest weatherRequest = response.body();
                         currentCity.setCurrentCity(weatherRequest, context);
                         fragment.setWeather();
+                        new Thread(()->{
+                            AppDatabase db = App.getInstance().getDatabase();
+                            CityDAO cityDAO = db.cityDAO();
+                            cityDAO.insert(fragment.setCityDB());
+                        }).start();
                     }
                 } else {
                     ResponseBody errorBody = response.errorBody();

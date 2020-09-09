@@ -16,7 +16,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.myweatherappadvanced.R;
+import com.example.myweatherappadvanced.calculate.CurrentTime;
 import com.example.myweatherappadvanced.customview.Thermometer;
+import com.example.myweatherappadvanced.db.CityDB;
 import com.example.myweatherappadvanced.inputdata.OpenWeatherNetwork;
 import com.example.myweatherappadvanced.settings.Settings;
 import com.example.myweatherappadvanced.ui.add.AddCity;
@@ -44,7 +46,8 @@ public class WeatherFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_weather, container, false);
     }
 
@@ -101,12 +104,23 @@ public class WeatherFragment extends Fragment {
         thermometer.setTemperature(openWeatherNetwork.getCurrentCity().getTemp());
     }
 
+    public CityDB setCityDB() {
+        CityDB cityDB = new CityDB();
+
+        cityDB.name = cityNameView.getText().toString();
+        cityDB.temperature = mainTemperatureView.getText().toString();
+
+        return cityDB;
+    }
+
     public void setErrorDialog(String errorMassage) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setTitle(R.string.error_title)
                 .setCancelable(false)
                 .setMessage(errorMassage)
-                .setPositiveButton(R.string.ok, (dialogInterface, i) -> new AddCity().show(requireActivity().getSupportFragmentManager(), "AddCityDialog"));
+                .setPositiveButton(R.string.ok,
+                        (dialogInterface, i) -> new AddCity().show(requireActivity().getSupportFragmentManager(),
+                                "AddCityDialog"));
         AlertDialog alert = builder.create();
         alert.show();
     }

@@ -1,28 +1,136 @@
 package com.example.myweatherappadvanced.inputdata.model;
 
+import java.util.List;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class WeatherRequest {
 
-    private long id;
-    private String name;
-    private long timezone;
-    private long visibility;
-    private long cod;
-    private String base;
-    private long dt;
-
-
+    @SerializedName("coord")
+    @Expose
     private Coord coord;
-    private Weather[] weather;
+    @SerializedName("weather")
+    @Expose
+    private List<Weather> weather = null;
+    @SerializedName("base")
+    @Expose
+    private String base;
+    @SerializedName("main")
+    @Expose
     private Main main;
+    @SerializedName("visibility")
+    @Expose
+    private Long visibility;
+    @SerializedName("wind")
+    @Expose
     private Wind wind;
+    @SerializedName("clouds")
+    @Expose
     private Clouds clouds;
+    @SerializedName("dt")
+    @Expose
+    private Long dt;
+    @SerializedName("sys")
+    @Expose
     private Sys sys;
+    @SerializedName("timezone")
+    @Expose
+    private Long timezone;
+    @SerializedName("id")
+    @Expose
+    private Long id;
+    @SerializedName("name")
+    @Expose
+    private String name;
+    @SerializedName("cod")
+    @Expose
+    private Long cod;
 
-    public long getId() {
+    public Coord getCoord() {
+        return coord;
+    }
+
+    public void setCoord(Coord coord) {
+        this.coord = coord;
+    }
+
+    public List<Weather> getWeather() {
+        return weather;
+    }
+
+    public void setWeather(List<Weather> weather) {
+        this.weather = weather;
+    }
+
+    public String getBase() {
+        return base;
+    }
+
+    public void setBase(String base) {
+        this.base = base;
+    }
+
+    public Main getMain() {
+        return main;
+    }
+
+    public void setMain(Main main) {
+        this.main = main;
+    }
+
+    public Long getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(Long visibility) {
+        this.visibility = visibility;
+    }
+
+    public Wind getWind() {
+        return wind;
+    }
+
+    public void setWind(Wind wind) {
+        this.wind = wind;
+    }
+
+    public Clouds getClouds() {
+        return clouds;
+    }
+
+    public void setClouds(Clouds clouds) {
+        this.clouds = clouds;
+    }
+
+    public Long getDt() {
+        return dt;
+    }
+
+    public void setDt(Long dt) {
+        this.dt = dt;
+    }
+
+    public Sys getSys() {
+        return sys;
+    }
+
+    public void setSys(Sys sys) {
+        this.sys = sys;
+    }
+
+    public Long getTimezone() {
+        return timezone;
+    }
+
+    public void setTimezone(Long timezone) {
+        this.timezone = timezone;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -34,92 +142,12 @@ public class WeatherRequest {
         this.name = name;
     }
 
-    public long getTimezone() {
-        return timezone;
-    }
-
-    public void setTimezone(int timezone) {
-        this.timezone = timezone;
-    }
-
-    public long getVisibility() {
-        return visibility;
-    }
-
-    public void setVisibility(int visibility) {
-        this.visibility = visibility;
-    }
-
-    public long getCod() {
+    public Long getCod() {
         return cod;
     }
 
-    public void setCod(long cod) {
+    public void setCod(Long cod) {
         this.cod = cod;
-    }
-
-    public String getBase() {
-        return base;
-    }
-
-    public void setBase(String base) {
-        this.base = base;
-    }
-
-    public long getDt() {
-        return dt;
-    }
-
-    public void setDt(long dt) {
-        this.dt = dt;
-    }
-
-    public Main getMain() {
-        return main;
-    }
-
-    public void setMain(Main main) {
-        this.main = main;
-    }
-
-    public Sys getSys() {
-        return sys;
-    }
-
-    public void setSys(Sys sys) {
-        this.sys = sys;
-    }
-
-    public Wind getWind() {
-        return wind;
-    }
-
-    public void setWind(Wind wind) {
-        this.wind = wind;
-    }
-
-    public Weather[] getWeather() {
-        return weather;
-    }
-
-    public void setWeather(Weather[] weather) {
-        this.weather = weather;
-    }
-
-    public Coord getCoord() {
-        return coord;
-    }
-
-    public void setCoord(Coord coord) {
-        this.coord = coord;
-    }
-
-    public Clouds getClouds() {
-        return clouds;
-    }
-
-    public void setClouds(Clouds clouds) {
-        this.clouds = clouds;
     }
 
 }

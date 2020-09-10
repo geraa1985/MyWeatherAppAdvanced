@@ -1,5 +1,8 @@
 package com.example.myweatherappadvanced.ui.settings;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.myweatherappadvanced.R;
-import com.example.myweatherappadvanced.settings.Settings;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class SettingsFragment extends Fragment {
@@ -33,6 +35,9 @@ public class SettingsFragment extends Fragment {
     private RadioButton day;
     private RadioButton night;
 
+    SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+
 
     @Nullable
     @Override
@@ -40,14 +45,18 @@ public class SettingsFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_settings, container, false);
     }
 
+    @SuppressLint("CommitPrefEdits")
     @Override
     public void onStart() {
         super.onStart();
 
+        sharedPreferences = requireContext().getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
         findViews();
         fab.setVisibility(View.GONE);
         getCheckedPositions();
         onChangeValuesListener();
+
     }
 
     private void findViews() {
@@ -69,14 +78,14 @@ public class SettingsFragment extends Fragment {
     }
 
     private void getCheckedPositions() {
-        degC.setChecked(!Settings.getInstance().isF());
-        degF.setChecked(Settings.getInstance().isF());
-        gPa.setChecked(!Settings.getInstance().isMM());
-        mm.setChecked(Settings.getInstance().isMM());
-        ms.setChecked(!Settings.getInstance().isKMH());
-        kmh.setChecked(Settings.getInstance().isKMH());
-        day.setChecked(!Settings.getInstance().isNight());
-        night.setChecked(Settings.getInstance().isNight());
+        degC.setChecked(sharedPreferences.getBoolean("isF", true));
+        degF.setChecked(sharedPreferences.getBoolean("isF", false));
+        gPa.setChecked(sharedPreferences.getBoolean("isMM", true));
+        mm.setChecked(sharedPreferences.getBoolean("isMM", false));
+        ms.setChecked(sharedPreferences.getBoolean("isKMH", true));
+        kmh.setChecked(sharedPreferences.getBoolean("isKMH", false));
+        day.setChecked(sharedPreferences.getBoolean("isNight", true));
+        night.setChecked(sharedPreferences.getBoolean("isNight", false));
     }
 
     private void onChangeValuesListener() {
@@ -90,10 +99,12 @@ public class SettingsFragment extends Fragment {
         rgTemp.setOnCheckedChangeListener((radioGroup, id) -> {
             switch (id) {
                 case R.id.degC:
-                    Settings.getInstance().setF(false);
+                    editor.putBoolean("isF", false);
+                    editor.apply();
                     break;
                 case R.id.degF:
-                    Settings.getInstance().setF(true);
+                    editor.putBoolean("isF", true);
+                    editor.apply();
                     break;
                 default:
                     break;
@@ -105,10 +116,12 @@ public class SettingsFragment extends Fragment {
         rgPress.setOnCheckedChangeListener((radioGroup, id) -> {
             switch (id) {
                 case R.id.gPa:
-                    Settings.getInstance().setMM(false);
+                    editor.putBoolean("isMM", false);
+                    editor.apply();
                     break;
                 case R.id.mm:
-                    Settings.getInstance().setMM(true);
+                    editor.putBoolean("isMM", true);
+                    editor.apply();
                     break;
                 default:
                     break;
@@ -120,10 +133,12 @@ public class SettingsFragment extends Fragment {
         rgWind.setOnCheckedChangeListener((radioGroup, id) -> {
             switch (id) {
                 case R.id.ms:
-                    Settings.getInstance().setKMH(false);
+                    editor.putBoolean("isKMH", false);
+                    editor.apply();
                     break;
                 case R.id.kmh:
-                    Settings.getInstance().setKMH(true);
+                    editor.putBoolean("isKMH", true);
+                    editor.apply();
                     break;
                 default:
                     break;
@@ -135,11 +150,13 @@ public class SettingsFragment extends Fragment {
         rgTheme.setOnCheckedChangeListener((radioGroup, id) -> {
             switch (id) {
                 case R.id.day:
-                    Settings.getInstance().setNight(false);
+                    editor.putBoolean("isNight", false);
+                    editor.apply();
                     requireActivity().recreate();
                     break;
                 case R.id.night:
-                    Settings.getInstance().setNight(true);
+                    editor.putBoolean("isNight", true);
+                    editor.apply();
                     requireActivity().recreate();
                     break;
                 default:

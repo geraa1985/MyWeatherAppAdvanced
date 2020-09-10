@@ -23,5 +23,8 @@
     <string name="clear_all">Очистить список</string>
     <string name="errorMessage">\ - скорее всего не является городом планеты Земля. Изучите глобус и введите корректный город.\</string>
     <string name="error_title">Ошибка</string>
+    <string name="sort_by_date">sort by date</string>
+    <string name="sort_by_ncity">sort by\ncity</string>
+    <string name="sort_by_temp">sort by temp</string>
 
 </resources>

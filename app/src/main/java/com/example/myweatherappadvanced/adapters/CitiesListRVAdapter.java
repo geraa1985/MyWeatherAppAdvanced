@@ -10,20 +10,24 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myweatherappadvanced.R;
+import com.example.myweatherappadvanced.db.CityDB;
+import com.example.myweatherappadvanced.interfaces.OnLongItemClick;
 import com.example.myweatherappadvanced.interfaces.OnNewCityClick;
 
-import java.util.LinkedList;
+import java.util.List;
 
 public class CitiesListRVAdapter extends RecyclerView.Adapter<CitiesListRVAdapter.ViewHolder> {
-    private LinkedList<String> citiesList;
+    private List<CityDB> citiesList;
     private OnNewCityClick onNewCityClick;
+    private OnLongItemClick onLongItemClick;
     private Activity activity;
 
-    public CitiesListRVAdapter(LinkedList<String> citiesList, OnNewCityClick onNewCityClick, Activity activity) {
+    public CitiesListRVAdapter(List<CityDB> citiesList, OnNewCityClick onNewCityClick, OnLongItemClick onLongItemClick, Activity activity) {
         if (this.citiesList == null) {
             this.citiesList = citiesList;
         }
         this.onNewCityClick = onNewCityClick;
+        this.onLongItemClick = onLongItemClick;
         this.activity = activity;
     }
 
@@ -36,10 +40,17 @@ public class CitiesListRVAdapter extends RecyclerView.Adapter<CitiesListRVAdapte
 
     @Override
     public void onBindViewHolder(@NonNull CitiesListRVAdapter.ViewHolder holder, int position) {
-        String city = citiesList.get(position);
+        CityDB city = citiesList.get(citiesList.size() - 1 - position);
         holder.setTextToTextView(city);
-        holder.setOnItemClick(city);
-        activity.registerForContextMenu(holder.textView);
+        holder.setOnItemClick(city.name);
+
+        activity.registerForContextMenu(holder.cityName);
+
+        holder.cityName.setOnLongClickListener(view -> {
+            onLongItemClick.onLongItemClick(city.id);
+            return false;
+        });
+
     }
 
     @Override
@@ -48,19 +59,27 @@ public class CitiesListRVAdapter extends RecyclerView.Adapter<CitiesListRVAdapte
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        TextView textView;
+        View itemView;
+        TextView cityName;
+        TextView cityTemperature;
+        TextView cityTime;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            textView = itemView.findViewById(R.id.item_city);
+            this.itemView = itemView;
+            cityName = itemView.findViewById(R.id.item_city);
+            cityTemperature = itemView.findViewById(R.id.item_temperature);
+            cityTime = itemView.findViewById(R.id.item_date);
         }
 
-        void setTextToTextView(String text) {
-            textView.setText(text);
+        void setTextToTextView(CityDB city) {
+            cityName.setText(city.name);
+            cityTime.setText(city.date);
+            cityTemperature.setText(city.temperature);
         }
 
         void setOnItemClick(String cityName) {
-            textView.setOnClickListener((v) -> {
+            this.cityName.setOnClickListener((v) -> {
                 if (onNewCityClick != null) {
                     onNewCityClick.onCityClick(cityName);
                 }

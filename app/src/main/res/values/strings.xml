@@ -41,4 +41,7 @@
     <string name="wikipedia" translatable="false">Wikipedia</string>
     <string name="errorMessage">\ - most likely is not a city on the planet Earth. Study the globe and enter the correct city.\</string>
     <string name="error_title">Error</string>
+    <string name="sort_by_date">sort by date</string>
+    <string name="sort_by_ncity">sort by\ncity</string>
+    <string name="sort_by_temp">sort by temp</string>
 </resources>

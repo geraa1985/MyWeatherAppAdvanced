@@ -1,10 +1,8 @@
 package com.example.myweatherappadvanced.db;
 
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
-import androidx.room.Update;
 
 import java.util.List;
 
@@ -14,13 +12,21 @@ public interface CityDAO {
     @Query("SELECT * FROM citydb")
     List<CityDB> getAll();
 
+    @Query("SELECT * FROM citydb ORDER BY id DESC")
+    List<CityDB> sortByDate();
+
+    @Query("SELECT * FROM citydb ORDER BY name DESC")
+    List<CityDB> sortByCity();
+
+    @Query("SELECT * FROM citydb ORDER BY temperature DESC")
+    List<CityDB> sortByTemp();
+
     @Insert
     void insert(CityDB cityDB);
 
-    @Update
-    void update(CityDB cityDB);
+    @Query("DELETE FROM citydb")
+    void clearAll();
 
-    @Delete
-    void delete(CityDB cityDB);
-
+    @Query("DELETE FROM citydb WHERE id = :id")
+    void deleteByID(long id);
 }

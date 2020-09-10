@@ -23,7 +23,7 @@
             android:layout_marginEnd="20dp"
             android:layout_marginStart="20dp"
             android:text="@string/sort_by_date"
-            android:textSize="15sp"
+            android:textSize="@dimen/button_text_size"
             android:textColor="@color/design_default_color_on_primary"
             android:backgroundTint="@color/cardview_shadow_start_color"
             tools:ignore="MissingClass,PrivateResource" />
@@ -36,7 +36,7 @@
             android:layout_marginEnd="20dp"
             android:layout_marginStart="20dp"
             android:text="@string/sort_by_ncity"
-            android:textSize="15sp"
+            android:textSize="@dimen/button_text_size"
             android:textColor="@color/design_default_color_on_primary"
             android:backgroundTint="@color/cardview_shadow_start_color"
             tools:ignore="MissingClass,PrivateResource" />
@@ -49,7 +49,7 @@
             android:layout_marginEnd="20dp"
             android:layout_marginStart="20dp"
             android:text="@string/sort_by_temp"
-            android:textSize="15sp"
+            android:textSize="@dimen/button_text_size"
             android:textColor="@color/design_default_color_on_primary"
             android:backgroundTint="@color/cardview_shadow_start_color"
             tools:ignore="MissingClass,PrivateResource" />

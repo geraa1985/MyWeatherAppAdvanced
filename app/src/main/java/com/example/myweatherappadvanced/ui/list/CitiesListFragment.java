@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myweatherappadvanced.R;
 import com.example.myweatherappadvanced.adapters.CitiesListRVAdapter;
-import com.example.myweatherappadvanced.db.App;
+import com.example.myweatherappadvanced.App;
 import com.example.myweatherappadvanced.db.AppDatabase;
 import com.example.myweatherappadvanced.db.CityDAO;
 import com.example.myweatherappadvanced.db.CityDB;

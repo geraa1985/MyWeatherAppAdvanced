@@ -19,7 +19,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.myweatherappadvanced.db.App;
 import com.example.myweatherappadvanced.db.AppDatabase;
 import com.example.myweatherappadvanced.db.CityDAO;
 import com.example.myweatherappadvanced.interfaces.OnLongItemClick;

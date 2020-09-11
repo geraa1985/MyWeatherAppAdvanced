@@ -5,7 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.example.myweatherappadvanced.BuildConfig;
-import com.example.myweatherappadvanced.db.App;
+import com.example.myweatherappadvanced.App;
 import com.example.myweatherappadvanced.db.AppDatabase;
 import com.example.myweatherappadvanced.db.CityDAO;
 import com.example.myweatherappadvanced.inputdata.model.WeatherRequest;

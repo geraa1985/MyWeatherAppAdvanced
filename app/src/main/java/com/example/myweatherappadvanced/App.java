@@ -1,8 +1,10 @@
-package com.example.myweatherappadvanced.db;
+package com.example.myweatherappadvanced;
 
 import android.app.Application;
 
 import androidx.room.Room;
+
+import com.example.myweatherappadvanced.db.AppDatabase;
 
 public class App extends Application {
 

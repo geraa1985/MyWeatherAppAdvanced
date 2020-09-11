@@ -14,4 +14,8 @@
     <dimen name="settings_header_margin_top">15dp</dimen>
     <dimen name="therm_width">15dp</dimen>
     <dimen name="therm_weight">75dp</dimen>
+    <dimen name="list_descriptions">20sp</dimen>
+    <dimen name="list_city_name">30sp</dimen>
+    <dimen name="list_item_height">90dp</dimen>
+    <dimen name="button_text_size">10sp</dimen>
 </resources>

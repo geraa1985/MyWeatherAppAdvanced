@@ -1,12 +1,15 @@
 package com.example.myweatherappadvanced;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -16,6 +19,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.myweatherappadvanced.db.AppDatabase;
+import com.example.myweatherappadvanced.db.CityDAO;
+import com.example.myweatherappadvanced.interfaces.OnLongItemClick;
 import com.example.myweatherappadvanced.interfaces.OnNewCityClick;
 import com.example.myweatherappadvanced.settings.Settings;
 import com.example.myweatherappadvanced.ui.list.CitiesListFragment;
@@ -23,16 +29,16 @@ import com.example.myweatherappadvanced.ui.settings.SettingsFragment;
 import com.example.myweatherappadvanced.ui.weather.WeatherFragment;
 import com.google.android.material.navigation.NavigationView;
 
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements OnNewCityClick {
+public class MainActivity extends AppCompatActivity implements OnNewCityClick, OnLongItemClick {
 
     private Toolbar toolbar;
     private DrawerLayout drawer;
     private NavigationView navigationView;
-    private TextView listItem;
+    private SharedPreferences sharedPreferences;
+    private long itemPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,23 +48,34 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick {
 
         findViews();
         setSupportActionBar(toolbar);
+        setDrawer();
+        firstStartBehaviour();
+        setOnClickForSideMenuItems();
+        getSupportFragmentManager().addOnBackStackChangedListener(this::setCheckedDrawerItems);
+    }
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
+    private void firstStartBehaviour() {
         if (Settings.getInstance().getCurrentFragment() == null) {
-            setCitiesListFragment();
+            sharedPreferences = getSharedPreferences("LastCity", Context.MODE_PRIVATE);
+            String lastCity = sharedPreferences.getString("LastCity", "");
+            if (Objects.equals(lastCity, "")) {
+                setCitiesListFragment();
+            } else {
+                onCityClick(lastCity);
+            }
         } else {
             setFragment(Settings.getInstance().getCurrentFragment());
             if (getSupportFragmentManager().getFragments().get(0).getClass() == SettingsFragment.class) {
                 getSupportFragmentManager().popBackStack();
             }
         }
-        setOnClickForSideMenuItems();
+    }
 
-        getSupportFragmentManager().addOnBackStackChangedListener(this::setCheckedDrawerItems);
+    private void setDrawer() {
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
     }
 
     @Override
@@ -95,11 +112,6 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick {
         toolbar = findViewById(R.id.toolbar);
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-
-        String[] citiesArray = getResources().getStringArray(R.array.cities);
-        if (Settings.getInstance().getCitiesList() == null) {
-            Settings.getInstance().setCitiesList(new LinkedList<>(Arrays.asList(citiesArray)));
-        }
     }
 
     @Override
@@ -126,7 +138,8 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick {
             switch (item.getItemId()) {
                 case R.id.nav_weather: {
                     WeatherFragment fragment = new WeatherFragment();
-                    fragment.getCity(Settings.getInstance().getCitiesList().get(0), this);
+                    String lastCity = sharedPreferences.getString("LastCity", "");
+                    fragment.getCity(lastCity, this);
                     setFragment(fragment);
                     drawer.close();
                     break;
@@ -171,7 +184,6 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick {
 
     @Override
     public void onCityClick(String cityName) {
-        Settings.getInstance().setCityFromList(true);
         WeatherFragment fragment = new WeatherFragment();
         setFragment(fragment);
         fragment.getCity(cityName, this);
@@ -180,7 +192,6 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        listItem = (TextView) v;
         getMenuInflater().inflate(R.menu.context_menu, menu);
     }
 
@@ -194,23 +205,39 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_delete: {
-                Settings.getInstance().getCitiesList().remove(listItem.getText().toString());
-                setCitiesListFragment();
+                Handler handler = new Handler(Looper.getMainLooper());
+                new Thread(()->{
+                    AppDatabase db = App.getInstance().getDatabase();
+                    CityDAO cityDAO = db.cityDAO();
+                    cityDAO.deleteByID(itemPosition);
+                    handler.post(this::setCitiesListFragment);
+                }).start();
                 break;
             }
             case R.id.action_clear_all: {
-                Settings.getInstance().getCitiesList().clear();
-                setCitiesListFragment();
+                Handler handler = new Handler(Looper.getMainLooper());
+                new Thread(()->{
+                    AppDatabase db = App.getInstance().getDatabase();
+                    CityDAO cityDAO = db.cityDAO();
+                    cityDAO.clearAll();
+                    handler.post(this::setCitiesListFragment);
+                }).start();
                 break;
             }
         }
     }
 
     private void checkTheme() {
-        if (Settings.getInstance().isNight()) {
+        SharedPreferences sharedPreferences = getSharedPreferences("Settings", MODE_PRIVATE);
+        if (sharedPreferences.getBoolean("isNight", false)) {
             setTheme(R.style.AppThemeDark);
         } else {
             setTheme(R.style.AppTheme);
         }
+    }
+
+    @Override
+    public void onLongItemClick(long itemPosition) {
+        this.itemPosition = itemPosition;
     }
 }

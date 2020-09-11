@@ -1,11 +1,11 @@
 package com.example.myweatherappadvanced.inputdata;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.example.myweatherappadvanced.R;
 import com.example.myweatherappadvanced.calculate.Calculator;
 import com.example.myweatherappadvanced.inputdata.model.WeatherRequest;
-import com.example.myweatherappadvanced.settings.Settings;
 
 public class CurrentCity {
 
@@ -33,10 +33,9 @@ public class CurrentCity {
 
     public void setCurrentCity(WeatherRequest city, Context context) {
 
-        this.name = city.getName();
-        Settings.getInstance().getCitiesList().remove(city.getName());
-        Settings.getInstance().getCitiesList().addFirst(city.getName());
+        SharedPreferences sharedPreferences = context.getSharedPreferences("Settings", Context.MODE_PRIVATE);
 
+        this.name = city.getName();
 
         this.imgUrl = "http://openweathermap.org/img/wn/" + city.getWeather().get(0).getIcon() + "@2x.png";
         this.weatherDescription = city.getWeather().get(0).getDescription();
@@ -44,7 +43,7 @@ public class CurrentCity {
         this.windDirect = city.getWind().getDeg() + context.getResources().getString(R.string.deg);
         this.temp = Math.round(city.getMain().getTemp());
 
-        if (Settings.getInstance().isF()) {
+        if (sharedPreferences.getBoolean("isF", false)) {
             long mainTemp = Calculator.cToF(city.getMain().getTemp());
             long feelsLikeTemp = Calculator.cToF(city.getMain().getFeelsLike());
             if (mainTemp > 0) {
@@ -70,14 +69,14 @@ public class CurrentCity {
             }
         }
 
-        if (Settings.getInstance().isMM()) {
+        if (sharedPreferences.getBoolean("isMM", false)) {
             long calcPress = Calculator.gPaToMm(city.getMain().getPressure());
             this.pressure = calcPress + " " + context.getResources().getString(R.string.mm);
         } else {
             this.pressure = city.getMain().getPressure() + " " + context.getResources().getString(R.string.gpa);
         }
 
-        if (Settings.getInstance().isKMH()) {
+        if (sharedPreferences.getBoolean("isKMH", false)) {
             long calcWindSpeed = Calculator.msToKmh(city.getWind().getSpeed());
             this.windSpeed = calcWindSpeed + " " + context.getResources().getString(R.string.km_h);
         } else {

@@ -18,7 +18,6 @@ import androidx.fragment.app.Fragment;
 
 import com.example.myweatherappadvanced.R;
 import com.example.myweatherappadvanced.customview.Thermometer;
-import com.example.myweatherappadvanced.db.CityDB;
 import com.example.myweatherappadvanced.inputdata.OpenWeatherNetwork;
 import com.example.myweatherappadvanced.ui.add.AddCity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -97,19 +96,11 @@ public class WeatherFragment extends Fragment {
         windDirectView.setText(openWeatherNetwork.getCurrentCity().getWindDirect());
         thermometer.setTemperature(openWeatherNetwork.getCurrentCity().getTemp());
 
-        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("LastCity", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("LastCity",
+                Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("LastCity", cityNameView.getText().toString());
         editor.apply();
-    }
-
-    public CityDB setCityDB() {
-        CityDB cityDB = new CityDB();
-
-        cityDB.name = cityNameView.getText().toString();
-        cityDB.temperature = mainTemperatureView.getText().toString();
-
-        return cityDB;
     }
 
     public void setErrorDialog(String errorMassage) {

@@ -12,7 +12,7 @@ public class CityDB {
     public long id;
     public String date;
     public String name;
-    public String temperature;
+    public long temperature;
 
     public CityDB () {
         this.date = CurrentTime.getCurrentTime();

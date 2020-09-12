@@ -1,6 +1,8 @@
 package com.example.myweatherappadvanced.adapters;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myweatherappadvanced.R;
+import com.example.myweatherappadvanced.calculate.Calculator;
 import com.example.myweatherappadvanced.db.CityDB;
 import com.example.myweatherappadvanced.interfaces.OnLongItemClick;
 import com.example.myweatherappadvanced.interfaces.OnNewCityClick;
@@ -75,7 +78,7 @@ public class CitiesListRVAdapter extends RecyclerView.Adapter<CitiesListRVAdapte
         void setTextToTextView(CityDB city) {
             cityName.setText(city.name);
             cityTime.setText(city.date);
-            cityTemperature.setText(city.temperature);
+            cityTemperature.setText(getTemperatureString(city.temperature));
         }
 
         void setOnItemClick(String cityName) {
@@ -84,6 +87,28 @@ public class CitiesListRVAdapter extends RecyclerView.Adapter<CitiesListRVAdapte
                     onNewCityClick.onCityClick(cityName);
                 }
             });
+        }
+
+        private String getTemperatureString(long temp) {
+            String temperature;
+            SharedPreferences sharedPreferences = activity.getSharedPreferences("Settings", Context.MODE_PRIVATE);
+
+            if (sharedPreferences.getBoolean("isF", false)) {
+                long mainTemp = Calculator.cToF((double) temp);
+                if (mainTemp > 0) {
+                    temperature = "+" + mainTemp + activity.getResources().getString(R.string.deg_f);
+                } else {
+                    temperature = mainTemp + activity.getResources().getString(R.string.deg_f);
+                }
+            } else {
+                if (Math.round(temp) > 0) {
+                    temperature = "+" + Math.round(temp) + activity.getResources().getString(R.string.deg_c);
+                } else {
+                    temperature = Math.round(temp) + activity.getResources().getString(R.string.deg_c);
+                }
+            }
+
+            return temperature;
         }
     }
 }

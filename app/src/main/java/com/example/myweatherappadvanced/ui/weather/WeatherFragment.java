@@ -20,7 +20,6 @@ import com.example.myweatherappadvanced.R;
 import com.example.myweatherappadvanced.customview.Thermometer;
 import com.example.myweatherappadvanced.db.CityDB;
 import com.example.myweatherappadvanced.inputdata.OpenWeatherNetwork;
-import com.example.myweatherappadvanced.settings.Settings;
 import com.example.myweatherappadvanced.ui.add.AddCity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;

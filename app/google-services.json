@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "109084160634",
+    "firebase_url": "https://myweatherappadvanced.firebaseio.com",
+    "project_id": "myweatherappadvanced",
+    "storage_bucket": "myweatherappadvanced.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:109084160634:android:ac89e8fd52cd7b63d241c3",
+        "android_client_info": {
+          "package_name": "com.example.myweatherappadvanced"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "109084160634-chhk079h2n1rqoer6q6o054htl4ad0t2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzHTUE-ulvM1LgtAAlbEl1rbvXheB6EO0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "109084160634-chhk079h2n1rqoer6q6o054htl4ad0t2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

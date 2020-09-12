@@ -1,8 +1,13 @@
 package com.example.myweatherappadvanced;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -39,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
     private NavigationView navigationView;
     private SharedPreferences sharedPreferences;
     private long itemPosition;
+    MyWiFiListenerReceiver myWiFiListenerReceiver = new MyWiFiListenerReceiver();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
         checkTheme();
         setContentView(R.layout.activity_main);
 
+        registerReceiver(myWiFiListenerReceiver, new IntentFilter(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION));
+        initNotificationChannel();
         findViews();
         setSupportActionBar(toolbar);
         setDrawer();
@@ -54,7 +62,22 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
         getSupportFragmentManager().addOnBackStackChangedListener(this::setCheckedDrawerItems);
     }
 
-    private void firstStartBehaviour() {
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(myWiFiListenerReceiver);
+    }
+
+    private void initNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            int importance = NotificationManager.IMPORTANCE_LOW;
+            NotificationChannel channel = new NotificationChannel("2", "name", importance);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+        private void firstStartBehaviour() {
         if (Settings.getInstance().getCurrentFragment() == null) {
             sharedPreferences = getSharedPreferences("LastCity", Context.MODE_PRIVATE);
             String lastCity = sharedPreferences.getString("LastCity", "");

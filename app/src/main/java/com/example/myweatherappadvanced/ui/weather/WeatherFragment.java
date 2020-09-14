@@ -64,7 +64,7 @@ public class WeatherFragment extends Fragment {
         fragmentWeatherBinding.cityName.setText(openWeatherNetwork.getCurrentCity().getName());
         fragmentWeatherBinding.mainTemperature.setText(openWeatherNetwork.getCurrentCity().getTemperature());
         Picasso.get().load(openWeatherNetwork.getCurrentCity().getImgUrl()).into(fragmentWeatherBinding.weatherImage);
-        fragmentWeatherBinding.feelsLike.setText(openWeatherNetwork.getCurrentCity().getFeelsLikeTemp());
+        fragmentWeatherBinding.valueFeelsLike.setText(openWeatherNetwork.getCurrentCity().getFeelsLikeTemp());
         fragmentWeatherBinding.weatherDescription.setText(openWeatherNetwork.getCurrentCity().getWeatherDescription());
         fragmentWeatherBinding.valueHumidity.setText(openWeatherNetwork.getCurrentCity().getHumidity());
         fragmentWeatherBinding.valuePressure.setText(openWeatherNetwork.getCurrentCity().getPressure());

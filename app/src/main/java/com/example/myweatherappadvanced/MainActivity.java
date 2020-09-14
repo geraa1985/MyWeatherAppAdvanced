@@ -19,11 +19,10 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.myweatherappadvanced.databinding.ActivityMainBinding;
 import com.example.myweatherappadvanced.db.AppDatabase;
 import com.example.myweatherappadvanced.db.CityDAO;
 import com.example.myweatherappadvanced.interfaces.OnLongItemClick;
@@ -32,17 +31,16 @@ import com.example.myweatherappadvanced.settings.Settings;
 import com.example.myweatherappadvanced.ui.list.CitiesListFragment;
 import com.example.myweatherappadvanced.ui.settings.SettingsFragment;
 import com.example.myweatherappadvanced.ui.weather.WeatherFragment;
-import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements OnNewCityClick, OnLongItemClick {
 
-    private Toolbar toolbar;
-    private DrawerLayout drawer;
-    private NavigationView navigationView;
-    private SharedPreferences sharedPreferences;
+    private ActivityMainBinding activityMainBinding;
+    private static FloatingActionButton fab;
+
+
     private long itemPosition;
     MyWiFiListenerReceiver myWiFiListenerReceiver = new MyWiFiListenerReceiver();
 
@@ -50,13 +48,17 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         checkTheme();
-        setContentView(R.layout.activity_main);
+        activityMainBinding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(activityMainBinding.getRoot());
 
-        registerReceiver(myWiFiListenerReceiver, new IntentFilter(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION));
+        fab = activityMainBinding.appBar.content.fab;
+        registerReceiver(myWiFiListenerReceiver,
+                new IntentFilter(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION));
         initNotificationChannel();
-        findViews();
-        setSupportActionBar(toolbar);
+
+        setSupportActionBar(activityMainBinding.appBar.toolbar);
         setDrawer();
+
         firstStartBehaviour();
         setOnClickForSideMenuItems();
         getSupportFragmentManager().addOnBackStackChangedListener(this::setCheckedDrawerItems);
@@ -68,50 +70,50 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
         unregisterReceiver(myWiFiListenerReceiver);
     }
 
+    public static FloatingActionButton getFab() {
+        return fab;
+    }
+
     private void initNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager notificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             int importance = NotificationManager.IMPORTANCE_LOW;
             NotificationChannel channel = new NotificationChannel("2", "name", importance);
             notificationManager.createNotificationChannel(channel);
         }
     }
 
-        private void firstStartBehaviour() {
-        if (Settings.getInstance().getCurrentFragment() == null) {
-            sharedPreferences = getSharedPreferences("LastCity", Context.MODE_PRIVATE);
-            String lastCity = sharedPreferences.getString("LastCity", "");
-            if (Objects.equals(lastCity, "")) {
-                setCitiesListFragment();
-            } else {
-                onCityClick(lastCity);
-            }
-        } else {
+    private void firstStartBehaviour() {
+        if (Settings.getInstance().getCurrentFragment() != null) {
             setFragment(Settings.getInstance().getCurrentFragment());
             if (getSupportFragmentManager().getFragments().get(0).getClass() == SettingsFragment.class) {
                 getSupportFragmentManager().popBackStack();
             }
+        } else {
+            setFragment(new WeatherFragment());
         }
     }
 
     private void setDrawer() {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+                this, activityMainBinding.drawerLayout, activityMainBinding.appBar.toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        activityMainBinding.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
     }
 
     @Override
     public void onBackPressed() {
-       if (getSupportFragmentManager().getFragments().get(0).getClass().equals(CitiesListFragment.class)) {
-           Intent intent = new Intent(Intent.ACTION_MAIN);
-           intent.addCategory(Intent.CATEGORY_HOME);
-           intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-           startActivity(intent);
-           finish();
-       } else {
-           getSupportFragmentManager().popBackStack();
-       }
+        if (getSupportFragmentManager().getFragments().get(0).getClass().equals(CitiesListFragment.class)) {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        } else {
+            getSupportFragmentManager().popBackStack();
+        }
     }
 
     @Override
@@ -129,12 +131,6 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         setCheckedDrawerItems();
-    }
-
-    private void findViews() {
-        toolbar = findViewById(R.id.toolbar);
-        drawer = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
     }
 
     @Override
@@ -157,19 +153,17 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
 
 
     private void setOnClickForSideMenuItems() {
-        navigationView.setNavigationItemSelectedListener(item -> {
+        activityMainBinding.navView.setNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.nav_weather: {
                     WeatherFragment fragment = new WeatherFragment();
-                    String lastCity = sharedPreferences.getString("LastCity", "");
-                    fragment.getCity(lastCity, this);
                     setFragment(fragment);
-                    drawer.close();
+                    activityMainBinding.drawerLayout.close();
                     break;
                 }
                 case R.id.nav_list: {
                     setCitiesListFragment();
-                    drawer.close();
+                    activityMainBinding.drawerLayout.close();
                     break;
                 }
             }
@@ -180,12 +174,12 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
     private void setCheckedDrawerItems() {
         Class<? extends Fragment> aClass = getSupportFragmentManager().getFragments().get(0).getClass();
         if (CitiesListFragment.class.equals(aClass)) {
-            navigationView.setCheckedItem(R.id.nav_list);
+            activityMainBinding.navView.setCheckedItem(R.id.nav_list);
         } else if (WeatherFragment.class.equals(aClass)) {
-            navigationView.setCheckedItem(R.id.nav_weather);
+            activityMainBinding.navView.setCheckedItem(R.id.nav_weather);
         } else {
-            if (navigationView.getCheckedItem() != null) {
-                navigationView.getCheckedItem().setChecked(false);
+            if (activityMainBinding.navView.getCheckedItem() != null) {
+                activityMainBinding.navView.getCheckedItem().setChecked(false);
             }
         }
     }
@@ -207,9 +201,13 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
 
     @Override
     public void onCityClick(String cityName) {
+        SharedPreferences sharedPreferences = getSharedPreferences("LastCity",
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("LastCity", cityName);
+        editor.apply();
         WeatherFragment fragment = new WeatherFragment();
         setFragment(fragment);
-        fragment.getCity(cityName, this);
     }
 
     @Override
@@ -229,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
         switch (id) {
             case R.id.action_delete: {
                 Handler handler = new Handler(Looper.getMainLooper());
-                new Thread(()->{
+                new Thread(() -> {
                     AppDatabase db = App.getInstance().getDatabase();
                     CityDAO cityDAO = db.cityDAO();
                     cityDAO.deleteByID(itemPosition);
@@ -239,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
             }
             case R.id.action_clear_all: {
                 Handler handler = new Handler(Looper.getMainLooper());
-                new Thread(()->{
+                new Thread(() -> {
                     AppDatabase db = App.getInstance().getDatabase();
                     CityDAO cityDAO = db.cityDAO();
                     cityDAO.clearAll();
@@ -252,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
 
     private void checkTheme() {
         SharedPreferences sharedPreferences = getSharedPreferences("Settings", MODE_PRIVATE);
-        if (sharedPreferences.getBoolean("isNight", false)) {
+        if (sharedPreferences.getBoolean("isNIGHT", false)) {
             setTheme(R.style.AppThemeDark);
         } else {
             setTheme(R.style.AppTheme);

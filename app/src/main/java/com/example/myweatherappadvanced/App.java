@@ -9,7 +9,6 @@ import com.example.myweatherappadvanced.db.AppDatabase;
 public class App extends Application {
 
     private static App instance;
-
     private AppDatabase database;
 
     @Override

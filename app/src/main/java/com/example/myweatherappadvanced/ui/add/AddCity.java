@@ -14,7 +14,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.myweatherappadvanced.R;
 import com.example.myweatherappadvanced.databinding.FragmentAddCityBinding;
-import com.example.myweatherappadvanced.interfaces.OnNewCityClick;
 import com.example.myweatherappadvanced.ui.list.CitiesListFragment;
 import com.example.myweatherappadvanced.ui.weather.WeatherFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -28,7 +27,6 @@ public class AddCity extends BottomSheetDialogFragment {
     private Pattern newCityRules = Pattern.compile("^[A-ZА-ЯЁ\\s][a-zа-яё\\s]{2,}$+|");
     private String newCityName;
     private boolean isValid;
-    private OnNewCityClick onNewCityClick;
 
 
     @Nullable
@@ -47,17 +45,6 @@ public class AddCity extends BottomSheetDialogFragment {
         setOnClickBehaviourToOK();
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        try {
-            onNewCityClick = (OnNewCityClick) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString()
-                    + " должен реализовывать интерфейс OnFragmentInteractionListener");
-        }
-    }
-
     private void setOnClickBehaviourToOK() {
         fragmentAddCityBinding.buttonOk.setOnClickListener((v) -> {
             fragmentAddCityBinding.enterCityInput.clearFocus();
@@ -71,7 +58,8 @@ public class AddCity extends BottomSheetDialogFragment {
                     editor.putString("LastCity", newCityName);
                     editor.apply();
 
-                    FragmentTransaction fragmentTransaction = requireActivity().getSupportFragmentManager().beginTransaction();
+                    FragmentTransaction fragmentTransaction =
+                            requireActivity().getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.fragmentContainer, new WeatherFragment());
                     fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();

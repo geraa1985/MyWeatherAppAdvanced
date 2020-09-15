@@ -75,7 +75,7 @@ public class Thermometer extends View {
         super.onSizeChanged(w, h, oldw, oldh);
 
         width = w - getPaddingLeft() - getPaddingRight();
-        padding = width/10;
+        padding = width / 10;
         height = h - getPaddingTop() - getPaddingBottom();
         radius = width / 2.f;
 
@@ -83,7 +83,8 @@ public class Thermometer extends View {
                 width - width / 4.f,
                 height - padding - radius);
 
-        tempRectangle.set(width / 4.f + padding, (height - 2 * padding) / 2.f - ((height - 2 * padding) / 2.f) * temperature / 50 + 2 * padding,
+        tempRectangle.set(width / 4.f + padding,
+                (height - 2 * padding) / 2.f - ((height - 2 * padding) / 2.f) * temperature / 50 + 2 * padding,
                 width - width / 4.f - padding,
                 height - 2 * padding);
     }
@@ -108,7 +109,8 @@ public class Thermometer extends View {
         } else if (temperature < 0) {
             tempPaint.setColor(Color.BLUE);
         }
-        tempRectangle.set(width / 4.f + padding, (height - 2 * padding) / 2.f - ((height - 2 * padding) / 2.f) * temperature / 50 + 2 * padding,
+        tempRectangle.set(width / 4.f + padding,
+                (height - 2 * padding) / 2.f - ((height - 2 * padding) / 2.f) * temperature / 50 + 2 * padding,
                 width - width / 4.f - padding,
                 height - 2 * padding);
         invalidate();

@@ -1,6 +1,7 @@
 package com.example.myweatherappadvanced.ui.add;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,66 +13,60 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.myweatherappadvanced.R;
-import com.example.myweatherappadvanced.interfaces.OnNewCityClick;
+import com.example.myweatherappadvanced.databinding.FragmentAddCityBinding;
 import com.example.myweatherappadvanced.ui.list.CitiesListFragment;
 import com.example.myweatherappadvanced.ui.weather.WeatherFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.regex.Pattern;
 
 public class AddCity extends BottomSheetDialogFragment {
 
-    private TextInputEditText editText;
-    private MaterialButton button;
+    private FragmentAddCityBinding fragmentAddCityBinding;
+
     private Pattern newCityRules = Pattern.compile("^[A-ZА-ЯЁ\\s][a-zа-яё\\s]{2,}$+|");
     private String newCityName;
     private boolean isValid;
-    private OnNewCityClick onNewCityClick;
 
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_add_city, container, false);
-
-        editText = view.findViewById(R.id.enterCityInput);
-        button = view.findViewById(R.id.buttonOk);
-        checkCityField();
-        setOnClickBehaviourToOK();
-
-        return view;
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        fragmentAddCityBinding = FragmentAddCityBinding.inflate(inflater, container, false);
+        return fragmentAddCityBinding.getRoot();
     }
 
     @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        try {
-            onNewCityClick = (OnNewCityClick) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString()
-                    + " должен реализовывать интерфейс OnFragmentInteractionListener");
-        }
+    public void onStart() {
+        super.onStart();
+
+        checkCityField();
+        setOnClickBehaviourToOK();
     }
 
     private void setOnClickBehaviourToOK() {
-        button.setOnClickListener((v) -> {
-            editText.clearFocus();
+        fragmentAddCityBinding.buttonOk.setOnClickListener((v) -> {
+            fragmentAddCityBinding.enterCityInput.clearFocus();
             if (newCityName != null) {
                 if (isValid) {
                     dismiss();
-                    if (requireActivity().getSupportFragmentManager().getFragments().get(0).getClass() == WeatherFragment.class) {
-                        WeatherFragment fragment = (WeatherFragment) requireActivity().getSupportFragmentManager().getFragments().get(0);
-                        fragment.getCity(newCityName, requireContext());
-                    } else {
-                        if (onNewCityClick != null) {
-                            onNewCityClick.onCityClick(newCityName);
-                        }
-                    }
+
+                    SharedPreferences sharedPreferences = requireContext().getSharedPreferences("LastCity",
+                            Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("LastCity", newCityName);
+                    editor.apply();
+
+                    FragmentTransaction fragmentTransaction =
+                            requireActivity().getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.replace(R.id.fragmentContainer, new WeatherFragment());
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
                 }
             } else {
-                FragmentTransaction fragmentTransaction = requireActivity().getSupportFragmentManager().beginTransaction();
+                FragmentTransaction fragmentTransaction =
+                        requireActivity().getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.fragmentContainer, new CitiesListFragment());
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
@@ -80,7 +75,7 @@ public class AddCity extends BottomSheetDialogFragment {
     }
 
     private void checkCityField() {
-        editText.setOnFocusChangeListener((view, b) -> {
+        fragmentAddCityBinding.enterCityInput.setOnFocusChangeListener((view, b) -> {
             if (!b) {
                 TextView inputText = (TextView) view;
                 isValid = validate(inputText, newCityRules);

@@ -14,63 +14,56 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myweatherappadvanced.App;
+import com.example.myweatherappadvanced.MainActivity;
 import com.example.myweatherappadvanced.R;
 import com.example.myweatherappadvanced.adapters.CitiesListRVAdapter;
-import com.example.myweatherappadvanced.App;
+import com.example.myweatherappadvanced.databinding.FragmentListBinding;
 import com.example.myweatherappadvanced.db.AppDatabase;
 import com.example.myweatherappadvanced.db.CityDAO;
 import com.example.myweatherappadvanced.db.CityDB;
 import com.example.myweatherappadvanced.interfaces.OnLongItemClick;
 import com.example.myweatherappadvanced.interfaces.OnNewCityClick;
 import com.example.myweatherappadvanced.ui.add.AddCity;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
 public class CitiesListFragment extends Fragment {
 
-    private RecyclerView cityRV;
-    private FloatingActionButton fab;
-
-    private MaterialButton sortByDate;
-    private MaterialButton sortByCity;
-    private MaterialButton sortByTemp;
+    private FragmentListBinding fragmentListBinding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_list, container, false);
+        fragmentListBinding = FragmentListBinding.inflate(inflater, container, false);
+        return fragmentListBinding.getRoot();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        fragmentListBinding = null;
     }
 
     @Override
     public void onStart() {
         super.onStart();
 
-        findViews();
-        fab.setVisibility(View.VISIBLE);
+        MainActivity.getFab().setVisibility(View.VISIBLE);
         setupAdapter();
         clickOnFAB();
-        sortByDate.setOnClickListener(onClickListener);
-        sortByCity.setOnClickListener(onClickListener);
-        sortByTemp.setOnClickListener(onClickListener);
-    }
-
-    private void findViews() {
-        cityRV = requireActivity().findViewById(R.id.citiesRV);
-        fab = requireActivity().findViewById(R.id.fab);
-
-        sortByCity = requireActivity().findViewById(R.id.sortByCity);
-        sortByDate = requireActivity().findViewById(R.id.sortByDate);
-        sortByTemp = requireActivity().findViewById(R.id.sortByTemperature);
+        fragmentListBinding.sortByDate.setOnClickListener(onClickListener);
+        fragmentListBinding.sortByCity.setOnClickListener(onClickListener);
+        fragmentListBinding.sortByTemperature.setOnClickListener(onClickListener);
     }
 
     private void setupAdapter() {
         LinearLayoutManager lm = new LinearLayoutManager(getContext());
         lm.setOrientation(RecyclerView.VERTICAL);
-        cityRV.setLayoutManager(lm);
-        cityRV.addItemDecoration(new DividerItemDecoration(requireActivity(), DividerItemDecoration.VERTICAL));
+        fragmentListBinding.citiesRV.setLayoutManager(lm);
+        fragmentListBinding.citiesRV.addItemDecoration(new DividerItemDecoration(requireActivity(),
+                DividerItemDecoration.VERTICAL));
         Handler handler = new Handler(Looper.getMainLooper());
         new Thread(() -> {
             AppDatabase db = App.getInstance().getDatabase();
@@ -81,7 +74,7 @@ public class CitiesListFragment extends Fragment {
     }
 
     private void clickOnFAB() {
-        fab.setOnClickListener(view -> new AddCity().show(requireActivity().getSupportFragmentManager(), "AddCityDialog"));
+        MainActivity.getFab().setOnClickListener(view -> new AddCity().show(requireActivity().getSupportFragmentManager(), "AddCityDialog"));
     }
 
     View.OnClickListener onClickListener = view -> {
@@ -110,7 +103,7 @@ public class CitiesListFragment extends Fragment {
     private void setAdapterFromDB(List<CityDB> citiesList) {
         CitiesListRVAdapter adapter = new CitiesListRVAdapter(citiesList, (OnNewCityClick) requireActivity(),
                 (OnLongItemClick) requireActivity(), getActivity());
-        cityRV.setAdapter(adapter);
+        fragmentListBinding.citiesRV.setAdapter(adapter);
         if (adapter.getItemCount() == 0) {
             new AddCity().show(requireActivity().getSupportFragmentManager(), "AddCityDialog");
         }

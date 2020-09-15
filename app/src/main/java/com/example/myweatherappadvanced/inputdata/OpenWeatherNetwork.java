@@ -8,6 +8,7 @@ import com.example.myweatherappadvanced.BuildConfig;
 import com.example.myweatherappadvanced.App;
 import com.example.myweatherappadvanced.db.AppDatabase;
 import com.example.myweatherappadvanced.db.CityDAO;
+import com.example.myweatherappadvanced.db.CityDB;
 import com.example.myweatherappadvanced.inputdata.model.WeatherRequest;
 import com.example.myweatherappadvanced.interfaces.OpenWeatherRetrofitAPI;
 import com.example.myweatherappadvanced.ui.weather.WeatherFragment;
@@ -63,7 +64,10 @@ public class OpenWeatherNetwork {
                         new Thread(()->{
                             AppDatabase db = App.getInstance().getDatabase();
                             CityDAO cityDAO = db.cityDAO();
-                            cityDAO.insert(fragment.setCityDB());
+                            CityDB cityDB = new CityDB();
+                            cityDB.name = currentCity.getName();
+                            cityDB.temperature = currentCity.getTemp();
+                            cityDAO.insert(cityDB);
                         }).start();
                     }
                 } else {

@@ -26,5 +26,6 @@
     <string name="sort_by_date">по дате</string>
     <string name="sort_by_ncity">по городу</string>
     <string name="sort_by_temp">по температуре</string>
+    <string name="current_position">current_position</string>
 
 </resources>

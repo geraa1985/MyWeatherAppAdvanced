@@ -44,4 +44,5 @@
     <string name="sort_by_date">sort by date</string>
     <string name="sort_by_ncity">sort by\ncity</string>
     <string name="sort_by_temp">sort by temp</string>
+    <string name="current_position">current_position</string>
 </resources>

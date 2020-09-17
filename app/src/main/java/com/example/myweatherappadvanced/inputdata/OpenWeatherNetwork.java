@@ -4,8 +4,8 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import com.example.myweatherappadvanced.BuildConfig;
 import com.example.myweatherappadvanced.App;
+import com.example.myweatherappadvanced.BuildConfig;
 import com.example.myweatherappadvanced.db.AppDatabase;
 import com.example.myweatherappadvanced.db.CityDAO;
 import com.example.myweatherappadvanced.db.CityDB;
@@ -14,8 +14,15 @@ import com.example.myweatherappadvanced.interfaces.OpenWeatherRetrofitAPI;
 import com.example.myweatherappadvanced.ui.weather.WeatherFragment;
 
 import java.io.IOException;
+import java.security.cert.CertificateException;
 import java.util.Locale;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
+import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,9 +49,46 @@ public class OpenWeatherNetwork {
         return instance;
     }
 
+    public static OkHttpClient.Builder getUnsafeOkHttpClient() {
+        try {
+            // Create a trust manager that does not validate certificate chains
+            final TrustManager[] trustAllCerts = new TrustManager[]{
+                    new X509TrustManager() {
+                        @Override
+                        public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+                        }
+
+                        @Override
+                        public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+                        }
+
+                        @Override
+                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                            return new java.security.cert.X509Certificate[]{};
+                        }
+                    }
+            };
+
+            // Install the all-trusting trust manager
+            final SSLContext sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+
+            // Create an ssl socket factory with our all-trusting manager
+            final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+
+            OkHttpClient.Builder builder = new OkHttpClient.Builder();
+            builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0]);
+            builder.hostnameVerifier((hostname, session) -> true);
+            return builder;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
+            .client(getUnsafeOkHttpClient().build())
             .build();
 
 
@@ -55,13 +99,14 @@ public class OpenWeatherNetwork {
 
         openWeatherRetrofitAPI.loadWeather(cityName, lang, units, apiKey).enqueue(new Callback<WeatherRequest>() {
             @Override
-            public void onResponse(@NonNull Call<WeatherRequest> call, @NonNull Response<WeatherRequest> response) {
+            public void onResponse(@NonNull Call<WeatherRequest> call,
+                                   @NonNull Response<WeatherRequest> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         WeatherRequest weatherRequest = response.body();
                         currentCity.setCurrentCity(weatherRequest, context);
                         fragment.setWeather();
-                        new Thread(()->{
+                        new Thread(() -> {
                             AppDatabase db = App.getInstance().getDatabase();
                             CityDAO cityDAO = db.cityDAO();
                             CityDB cityDB = new CityDB();

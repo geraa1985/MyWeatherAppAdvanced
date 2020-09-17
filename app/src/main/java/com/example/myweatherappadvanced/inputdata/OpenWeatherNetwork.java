@@ -1,5 +1,6 @@
 package com.example.myweatherappadvanced.inputdata;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
@@ -14,7 +15,6 @@ import com.example.myweatherappadvanced.interfaces.OpenWeatherRetrofitAPI;
 import com.example.myweatherappadvanced.ui.weather.WeatherFragment;
 
 import java.io.IOException;
-import java.security.cert.CertificateException;
 import java.util.Locale;
 
 import javax.net.ssl.SSLContext;
@@ -51,15 +51,16 @@ public class OpenWeatherNetwork {
 
     public static OkHttpClient.Builder getUnsafeOkHttpClient() {
         try {
-            // Create a trust manager that does not validate certificate chains
             final TrustManager[] trustAllCerts = new TrustManager[]{
                     new X509TrustManager() {
+                        @SuppressLint("TrustAllX509TrustManager")
                         @Override
-                        public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+                        public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) {
                         }
 
+                        @SuppressLint("TrustAllX509TrustManager")
                         @Override
-                        public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+                        public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) {
                         }
 
                         @Override
@@ -69,11 +70,9 @@ public class OpenWeatherNetwork {
                     }
             };
 
-            // Install the all-trusting trust manager
             final SSLContext sslContext = SSLContext.getInstance("SSL");
             sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
 
-            // Create an ssl socket factory with our all-trusting manager
             final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
 
             OkHttpClient.Builder builder = new OkHttpClient.Builder();

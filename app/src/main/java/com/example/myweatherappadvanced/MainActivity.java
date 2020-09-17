@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -52,6 +53,8 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
     private static final int PERMISSION_REQUEST_CODE = 777;
     private double latitude;
     private double longitude;
+    private LocationListener listener;
+    private LocationManager locationManager;
 
     private long itemPosition;
     MyWiFiListenerReceiver myWiFiListenerReceiver = new MyWiFiListenerReceiver();
@@ -233,6 +236,7 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
         editor.apply();
         WeatherFragment fragment = new WeatherFragment();
         setFragment(fragment);
+        locationManager.removeUpdates(listener);
     }
 
     private void getCurrentCity() {
@@ -317,16 +321,17 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_COARSE);
         String provider = locationManager.getBestProvider(criteria, true);
         if (provider != null) {
-            locationManager.requestLocationUpdates(provider, 10000, 10, location -> {
-                latitude = location.getLatitude();
-                longitude = location.getLongitude();
-                getCurrentCity();
-            });
+           listener = location -> {
+               latitude = location.getLatitude();
+               longitude = location.getLongitude();
+               getCurrentCity();
+           };
+            locationManager.requestLocationUpdates(provider, 5000, 0, listener);
         }
     }
 

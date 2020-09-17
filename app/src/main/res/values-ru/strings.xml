@@ -27,5 +27,6 @@
     <string name="sort_by_ncity">по городу</string>
     <string name="sort_by_temp">по температуре</string>
     <string name="current_position">current_position</string>
+    <string name="map">Карта</string>
 
 </resources>

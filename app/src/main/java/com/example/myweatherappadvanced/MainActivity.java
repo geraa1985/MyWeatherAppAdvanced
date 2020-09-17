@@ -37,6 +37,7 @@ import com.example.myweatherappadvanced.interfaces.OnLongItemClick;
 import com.example.myweatherappadvanced.interfaces.OnNewCityClick;
 import com.example.myweatherappadvanced.settings.Settings;
 import com.example.myweatherappadvanced.ui.list.CitiesListFragment;
+import com.example.myweatherappadvanced.ui.map.MapsFragment;
 import com.example.myweatherappadvanced.ui.settings.SettingsFragment;
 import com.example.myweatherappadvanced.ui.weather.WeatherFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -194,6 +195,12 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
                     activityMainBinding.drawerLayout.close();
                     break;
                 }
+                case R.id.maps: {
+                    MapsFragment fragment = new MapsFragment();
+                    setFragment(fragment);
+                    activityMainBinding.drawerLayout.close();
+                    break;
+                }
             }
             return true;
         });
@@ -240,19 +247,24 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
     }
 
     private void getCurrentCity() {
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        try {
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            String city = addresses.get(0).getLocality();
-            String area = addresses.get(0).getAdminArea();
-            if (city == null) {
-                onCityClick(area);
-                return;
+        Handler handler = new Handler(Looper.getMainLooper());
+        new Thread(()->{
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            try {
+                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                String city = addresses.get(0).getLocality();
+                String area = addresses.get(0).getAdminArea();
+                handler.post(()->{
+                    if (city == null) {
+                        onCityClick(area);
+                        return;
+                    }
+                    onCityClick(city);
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            onCityClick(city);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        }).start();
     }
 
     @Override

@@ -12,5 +12,9 @@
             android:id="@+id/nav_list"
             android:icon="@drawable/list"
             android:title="@string/menu_list" />
+        <item
+            android:id="@+id/maps"
+            android:icon="@drawable/map"
+            android:title="@string/map" />
     </group>
 </menu>

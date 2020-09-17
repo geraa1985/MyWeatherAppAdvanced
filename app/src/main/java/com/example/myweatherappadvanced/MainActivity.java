@@ -247,19 +247,24 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
     }
 
     private void getCurrentCity() {
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        try {
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            String city = addresses.get(0).getLocality();
-            String area = addresses.get(0).getAdminArea();
-            if (city == null) {
-                onCityClick(area);
-                return;
+        Handler handler = new Handler(Looper.getMainLooper());
+        new Thread(()->{
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            try {
+                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                String city = addresses.get(0).getLocality();
+                String area = addresses.get(0).getAdminArea();
+                handler.post(()->{
+                    if (city == null) {
+                        onCityClick(area);
+                        return;
+                    }
+                    onCityClick(city);
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            onCityClick(city);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        }).start();
     }
 
     @Override
@@ -333,11 +338,11 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
         criteria.setAccuracy(Criteria.ACCURACY_COARSE);
         String provider = locationManager.getBestProvider(criteria, true);
         if (provider != null) {
-            listener = location -> {
-                latitude = location.getLatitude();
-                longitude = location.getLongitude();
-                getCurrentCity();
-            };
+           listener = location -> {
+               latitude = location.getLatitude();
+               longitude = location.getLongitude();
+               getCurrentCity();
+           };
             locationManager.requestLocationUpdates(provider, 5000, 0, listener);
         }
     }

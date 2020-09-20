@@ -14,7 +14,17 @@
             android:title="@string/menu_list" />
         <item
             android:id="@+id/maps"
+            android:enabled="false"
             android:icon="@drawable/map"
             android:title="@string/map" />
+        <item
+            android:id="@+id/yamaps"
+            android:enabled="false"
+            android:icon="@drawable/map"
+            android:title="@string/yandex_map" />
+        <item
+            android:id="@+id/sign_in"
+            android:icon="@drawable/account"
+            android:title="@string/sign_in" />
     </group>
 </menu>

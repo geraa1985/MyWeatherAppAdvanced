@@ -36,16 +36,17 @@ import com.example.myweatherappadvanced.db.CityDAO;
 import com.example.myweatherappadvanced.interfaces.OnLongItemClick;
 import com.example.myweatherappadvanced.interfaces.OnNewCityClick;
 import com.example.myweatherappadvanced.settings.Settings;
+import com.example.myweatherappadvanced.ui.SignInFragment;
 import com.example.myweatherappadvanced.ui.list.CitiesListFragment;
 import com.example.myweatherappadvanced.ui.map.MapsFragment;
 import com.example.myweatherappadvanced.ui.settings.SettingsFragment;
 import com.example.myweatherappadvanced.ui.weather.WeatherFragment;
+import com.example.myweatherappadvanced.ui.yamap.YandexMap;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements OnNewCityClick, OnLongItemClick {
 
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
 
         setOnClickForSideMenuItems();
         getSupportFragmentManager().addOnBackStackChangedListener(this::setCheckedDrawerItems);
+
     }
 
     @Override
@@ -112,13 +114,7 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
                 getSupportFragmentManager().popBackStack();
             }
         } else {
-            SharedPreferences sharedPreferences = getSharedPreferences("LastCity", Context.MODE_PRIVATE);
-            String lastCity = sharedPreferences.getString("LastCity", "");
-            if (Objects.equals(lastCity, "")) {
-                requestCurrentLocation();
-            } else {
-                setFragment(new WeatherFragment());
-            }
+            setFragment(new WeatherFragment());
         }
     }
 
@@ -201,6 +197,18 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
                     activityMainBinding.drawerLayout.close();
                     break;
                 }
+                case R.id.yamaps: {
+                    Fragment fragment = new YandexMap();
+                    setFragment(fragment);
+                    activityMainBinding.drawerLayout.close();
+                    break;
+                }
+                case R.id.sign_in: {
+                    Fragment fragment = new SignInFragment();
+                    setFragment(fragment);
+                    activityMainBinding.drawerLayout.close();
+                    break;
+                }
             }
             return true;
         });
@@ -248,13 +256,13 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
 
     private void getCurrentCity() {
         Handler handler = new Handler(Looper.getMainLooper());
-        new Thread(()->{
+        new Thread(() -> {
             Geocoder geocoder = new Geocoder(this, Locale.getDefault());
             try {
                 List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
                 String city = addresses.get(0).getLocality();
                 String area = addresses.get(0).getAdminArea();
-                handler.post(()->{
+                handler.post(() -> {
                     if (city == null) {
                         onCityClick(area);
                         return;
@@ -338,11 +346,11 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
         criteria.setAccuracy(Criteria.ACCURACY_COARSE);
         String provider = locationManager.getBestProvider(criteria, true);
         if (provider != null) {
-           listener = location -> {
-               latitude = location.getLatitude();
-               longitude = location.getLongitude();
-               getCurrentCity();
-           };
+            listener = location -> {
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+                getCurrentCity();
+            };
             locationManager.requestLocationUpdates(provider, 5000, 0, listener);
         }
     }

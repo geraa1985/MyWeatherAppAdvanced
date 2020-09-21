@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.myweatherappadvanced.MainActivity;
+import com.example.myweatherappadvanced.R;
 import com.example.myweatherappadvanced.databinding.FragmentSignInBinding;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -39,7 +40,10 @@ public class SignInFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         MainActivity.getFab().setVisibility(View.GONE);
 
+
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.server_client_id))
                 .requestEmail()
                 .build();
 
@@ -89,6 +93,7 @@ public class SignInFragment extends Fragment {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             disableSign();
             assert account != null;
+            String idToken = account.getIdToken(); //можно послать в бэкенд...
             updateUI(account.getEmail());
         } catch (ApiException e) {
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());

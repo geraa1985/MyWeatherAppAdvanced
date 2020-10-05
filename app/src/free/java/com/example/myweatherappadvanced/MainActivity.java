@@ -1,11 +1,18 @@
 package com.example.myweatherappadvanced;
 
+import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +26,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -29,17 +37,26 @@ import com.example.myweatherappadvanced.interfaces.OnLongItemClick;
 import com.example.myweatherappadvanced.interfaces.OnNewCityClick;
 import com.example.myweatherappadvanced.settings.Settings;
 import com.example.myweatherappadvanced.ui.list.CitiesListFragment;
+import com.example.myweatherappadvanced.ui.map.MapsFragment;
 import com.example.myweatherappadvanced.ui.settings.SettingsFragment;
+import com.example.myweatherappadvanced.ui.signin.SignInFragment;
 import com.example.myweatherappadvanced.ui.weather.WeatherFragment;
+import com.example.myweatherappadvanced.ui.yamap.YandexMap;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements OnNewCityClick, OnLongItemClick {
 
     private ActivityMainBinding activityMainBinding;
     private static FloatingActionButton fab;
-
+    private static final int PERMISSION_REQUEST_CODE = 777;
+    private double latitude;
+    private double longitude;
+    private LocationListener listener;
+    private LocationManager locationManager;
 
     private long itemPosition;
     MyWiFiListenerReceiver myWiFiListenerReceiver = new MyWiFiListenerReceiver();
@@ -59,9 +76,15 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
         setSupportActionBar(activityMainBinding.appBar.toolbar);
         setDrawer();
 
-        firstStartBehaviour();
         setOnClickForSideMenuItems();
         getSupportFragmentManager().addOnBackStackChangedListener(this::setCheckedDrawerItems);
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        firstStartBehaviour();
     }
 
     @Override
@@ -149,8 +172,10 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
         if (item.getItemId() == R.id.action_settings) {
             setSettingsFragment();
         }
+        if (item.getItemId() == R.id.current_geo) {
+            requestCurrentLocation();
+        }
     }
-
 
     private void setOnClickForSideMenuItems() {
         activityMainBinding.navView.setNavigationItemSelectedListener(item -> {
@@ -163,6 +188,24 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
                 }
                 case R.id.nav_list: {
                     setCitiesListFragment();
+                    activityMainBinding.drawerLayout.close();
+                    break;
+                }
+                case R.id.maps: {
+                    MapsFragment fragment = new MapsFragment();
+                    setFragment(fragment);
+                    activityMainBinding.drawerLayout.close();
+                    break;
+                }
+                case R.id.yamaps: {
+                    Fragment fragment = new YandexMap();
+                    setFragment(fragment);
+                    activityMainBinding.drawerLayout.close();
+                    break;
+                }
+                case R.id.sign_in: {
+                    Fragment fragment = new SignInFragment();
+                    setFragment(fragment);
                     activityMainBinding.drawerLayout.close();
                     break;
                 }
@@ -208,6 +251,28 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
         editor.apply();
         WeatherFragment fragment = new WeatherFragment();
         setFragment(fragment);
+        locationManager.removeUpdates(listener);
+    }
+
+    private void getCurrentCity() {
+        Handler handler = new Handler(Looper.getMainLooper());
+        new Thread(() -> {
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            try {
+                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                String city = addresses.get(0).getLocality();
+                String area = addresses.get(0).getAdminArea();
+                handler.post(() -> {
+                    if (city == null) {
+                        onCityClick(area);
+                        return;
+                    }
+                    onCityClick(city);
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     @Override
@@ -260,5 +325,68 @@ public class MainActivity extends AppCompatActivity implements OnNewCityClick, O
     @Override
     public void onLongItemClick(long itemPosition) {
         this.itemPosition = itemPosition;
+    }
+
+    private void requestCurrentLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            requestLocation();
+        } else {
+            requestLocationPermissions();
+        }
+    }
+
+    private void requestLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+        String provider = locationManager.getBestProvider(criteria, true);
+        if (provider != null) {
+            listener = location -> {
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+                getCurrentCity();
+            };
+            locationManager.requestLocationUpdates(provider, 5000, 0, listener);
+        }
+    }
+
+    private void requestLocationPermissions() {
+        if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                    },
+                    PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length == 2 &&
+                    (grantResults[0] == PackageManager.PERMISSION_GRANTED || grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                if (isGeoDisabled()) {
+                    startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                }
+                requestLocation();
+            } else {
+                setFragment(new WeatherFragment());
+            }
+        }
+    }
+
+    public boolean isGeoDisabled() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        if (!isGPSEnabled) return !isNetworkEnabled;
+        return false;
     }
 }

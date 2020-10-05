@@ -26,5 +26,10 @@
     <string name="sort_by_date">по дате</string>
     <string name="sort_by_ncity">по городу</string>
     <string name="sort_by_temp">по температуре</string>
+    <string name="current_position">current_position</string>
+    <string name="map">Карта</string>
+    <string name="yandex_map">Yandex map</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_out">Sign out</string>
 
 </resources>
